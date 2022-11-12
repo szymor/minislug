@@ -1,0 +1,20 @@
+# Makefile to build the dynamic lib 'libymlib.so'
+
+TARGET = libymlib.so 
+OBJECTS = digidrum.o Ym2149Ex.o YmMusic.o LzhLib.o YmLoad.o YmUserInterface.o
+
+CFLAGS = -c -fPIC -O3 -Wall -Wno-write-strings -s -L/usr/lib -DNDEBUG 
+LNKFLAGS = -shared
+CPP = g++
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CPP) $(LNKFLAGS) -o $@ $^ 
+
+.cpp.o:
+	$(CPP) $(CFLAGS) -o $@ $< 
+
+clean:
+	rm $(OBJECTS)
+

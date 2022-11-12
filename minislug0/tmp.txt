@@ -1,0 +1,1522 @@
+
+Ligne Nico :
+#if defined (__LINUX__) || defined (__APPLE__)
+
+
+http://randomhoohaas.flyingomelette.com/MetalSlug-MissingInAction/MetalSlug1/unusedgraphics/unusedgraphics.htm
+http://thedailypos.org/forum/index.php?topic=5703.0 > déroulement du jeu.
+
+//spr flip x : refx = nLg - refx.
+//spr flip x rect : x1 = -x2 et x2 = -x1
+
+Voir le .s :
+As for the Code::Blocks part, from Project -> Build options... -> Compiler settings tab -> Other options sub-tab; there, type -save-temps. It should do the trick
+
+Bugs connus : Sprites de 1 ligne (ou 1 col), on peut corriger la capture qui marque empty sprite et prend le carré entier, mais ça pose ensuite un pb à l'affichage (ligne min = ligne max, diff-1 == 0 => pas d'affichage).
+
+Plafonds en blocs 3 gérés uniquement pour la nage et le sous-marin. S'il faut l'adapter aux pf normales,
+il faut retoucher BlockCeilingGetHeight() pour gérer les blocs 1 (0 si vide, 16 sinon), BlockGetHeight() pour gérer les blocs 3 (idem),
+et retoucher les Side_check() + revoir le side_check standard pour virer le test au niveau de la tête et gérer avec CheckCeiling() au lieu de HeadCheck().
+(et sûrement quelques autres modifs avec).
+
+(ok mais commenté car ne va pas servir, à moins de revoir tout le déplacement du perso 'naked')/ BlockCeilingGetHeight() : si bloc 1 ou 2, renvoyer 16 ? (sauf si ht 0 ?). => ça ne devrait pas servir dans ce projet, mais bon.
+---------------------------------------
+Pts :
+reb soldier : 50
+girida : 250
+pow : 100
+rocket diver : 50 nu / 100 avec sa roquette
+---------------------------------------
+"recaptured prisoner"
+in every level it must recover at least 10 in order to obtain an extra bonus of 100.000 points
+every recovered prisoner has a value of 1000 points
+
+
+
+!!! Autres projets !!!
+Regarder 'SprGetRect' :
+	if ((nSprNo & ~(SPR_Flip_X | SPR_Flip_Y)) == SPR_NoSprite) return (0);	< c'était SPR_FlipX | Spr_FlipX ! Mettre fx|fy.
+
+
+
+
+non/ fichier render.c => boaf.
+ok macro/ une fct pour tester si on peut tirer ? (héros pas mort + héros pas victoire). ennemis : ne plus tirer quand 'victory'. > a mettre partout.
+non utilisé/ mst : truck / idle = première image du drive. Couche 3 pour larguer un soldat (sur idle).
+non/ truck (mst15) : lev 1 : générer un slug hélico quand explose ?
+non/ mst15 : gérer le flip x pour d'autres niveaux (base sous-marine).
+non/ truck (mst15) : générer un bonus quand explose ?
+ok/ scroll bloqué, quand on relâche le scroll, limiter à gauche au x en cours (pour éviter un effet de retour en arrière, même si ça ne limite pas le saut vers l'avant). => On peut bloquer complètement si scroll type = right only.
+ok/ sfx : trouver un son pour le décollage de la fusée.
+ok/ sfx : swoosh pour M14 lancer de grenade & coup d'épée + coup de couteau du joueur.
+ok/ sfx : trouver un deuxième son pour le tank ? (quand il roule ?) => ou juste au démarrage, avec coupure du son en boucle tq le son est joué.
+ok/ sfx : splash d'atterrissage dans l'eau.
+ok/ sfx : trouver un son "pshitt" pour le contrôle de la fusée.
+ok/ sfx : pour le train (faible prio).
+ok/ Joystick : Config des boutons.
+ok/ Joystick : Reset du compteur d'inactivité.
+ok/ Joystick : Faire les tests après l'init sur le nombre de boutons.
+ok/ Mettre e_Sfx_Rocket1 dans la table des sons des slugs pour coupure.
+ok/ En fait, faire des blocs, ce sera bien plus simple. - Faire un camion détruit fixe pour le M24. + retoucher la pf pour qu'elle descende de qquelques pixels, sinon ça ne touche pas le sol sur le train.
+ok/ void Sfx_ClearChannels(void) à la fin des transits.
+ok/ B3 : Mothership core. - non/ Lasers (éclairs de la ptolemaic tower) qui tirent vers le bas ? - oui/ Ou grosses boules d'énergie en rafale ?
+ok/ gfx : Boule B3 : retoucher l'impact pour ne pas avoir de plat au sol.
+ok/ B3 : Fin : tourner le joueur dans le sens du monoeye ?
+ok/ B3 : mini UFO qui passe d'un côté à l'autre. => finir, peut-être faire arriver d'en haut ?
+ok/ B3 : immobiliser le joueur quand B3 mort, pendant monoeye.
+ok/ B3 : canon : si anm de tir en cours au moment de la destruction, un tir peut partir.
+ok/ Zones de col sur le tir du canon du B3 !
+ok/ B3 : canon : ne pas tirer quand héros mort.
+ok/ B3 : mini UFO : mettre une oscillation Y.
+ok/ B3 : destruction des tirs quand mort du boss !
+ok/ bugfix : décalage de 1 pixel lors de l'affichage des sprites fx|fy, vérifier que ça ne pose pas de problème.
+ok/ sfx : faire une fonction pour couper un son spécifique ? (moteurs).
+ok/ anm : coupure d'un son depuis une anim. => le son du tir coupe le son du reload.
+ok/ sfx : voir pour mettre aux moteurs un son très prioritaire plutôt que l'inverse ?
+ok/ sfx : Helico, son ok. Voir si on peut le jouer plus souvent quand l'hélico bouge.
+ok/ sfx : slug tank : trouver un son de moteur pour le tank.
+ok, mortar/ sfx : tank : canon.
+ok/ sfx : son splatch pour pas dans l'eau. (faible prio).
+ok/ rumi : final : Rallonger le timer.
+ok/ rumi : dans boss helico. (init 27 / mst 28) / non, semble ok /=> toujours la même arme ??? (une fois qu'on a l'une ou l'autre, c'est tjs la même).
+ok/ rumi : dans boss 1.
+ok/ Faire une Rumi Aikawa ? Mst appelé par les boss si pas de capsule d'armement à l'écran. (+ on peut faire un timer stocké dans les items de quête).
+ok/ Rumi : Faire le RumiCheck() pour savoir s'il faut générer une Rumi ou pas.
+ok/ rumi : test de sortie d'écran à faire pendant la fuite, + appel de rumi_reset.
+ok/ suspsub : certaines explosions passent dessus/dessous le cache du lanceur de roquettes.
+ok/ rumi : bug : arrive quand perso mort. (faire le test avec la phase de jeu ?)
+ok/ M22 : pts de vie sur les tonneaux explosifs ?
+ok/ M22 : générer une zone d'explosion pour tuer les monstres ?
+ok/ Slug hélico, ne clignote pas quand invulnérable en début de vie ? (lev 2, helico no exit).
+ok/ Boss 2A : ne pas tirer si héros mort.
+ok +32 / stderr : out of anim slots : sur boss2 quand roquettes (dust de la fumée) + tir de la tourelle (plein).
+non, testé, et non/ distances qui freinent : coup du step = d - d*7/8 ? => bof, on n'arrive pas forcément à avoir une arrivée aussi fluide.
+déjà fait ?/ droite gauche / faire se tourner les monstres s'ils se prennent une balle ? (voir mars people).
+ok/ nb de bombes par défaut dans les slugs générés. + passer en .h : #define	SLUG_BOMBS_DEFAULT	10//50
+non, car pas si généré, pas si scroll free... bref, jamais. / slug : screen out si scroll type = right only.
+ok/ m30 : limiter le nombre de méduses et de poulpes pour empêcher le scoring.
+ok/ Bug : L7 : rock, hard spr ne disparait pas à tous les coups ? (vu avec le shotgun)
+ok/ Brain Bot : Mort, tourner à l'opposé du joueur.
+ok/ L7 : cacher le sous-marin derrière un hard sprite ?
+ok/ tester les touches interdites dans la conf (interdire les touches Fx). => Dans l'exe qui saisit la conf, ça devrait suffire.
+ok/ e_Mst52_Credits0,
+ok/ M52, placer au début du lev2, si nMission != 0 => kill. Sinon bloque le scroll et crédits seuls.
+ok/ mst pour credits / ou pas, screen spécial avec sprites dans une bande par dessus. => mst52.
+ok/ mst pour how to play > qui ferait une sorte d'auto pilot pour le héros ? => Attention, si slug, il faut que ça fonctionne aussi.
+ok/ mst 14 : avec les boucliers (gfx à faire).
+ok/ Si cheat codes, pas de high score !
+non/ Cheat codes : A mettre aussi pendant le jeu ? => non, c'est long comme test.
+ok/	e_Cheat_WeaponSelect = 1 << 0,
+ok/	e_Cheat_WeaponUnlimited = 1 << 1,
+ok/	e_Cheat_InifiniteLives = 1 << 2,
+ok/	e_Cheat_Invulnerability = 1 << 3,
+ok/	e_Cheat_GodMode = (1 << 5) | e_Cheat_Credits | e_Cheat_Invulnerability | e_Cheat_InifiniteLives | e_Cheat_WeaponUnlimited | e_Cheat_WeaponSelect,
+ok/ => revoir les placements des mst 7 (modif du mars people). => les zombies dans le train.
+non, niveau non utilisé/ stand by, normalement on remplace l'usine/ monstres jaillissant du plafond dans l'usine (dans le tuyau qui tourne). mst à choisir, gfx à faire.
+
+
+
+
+
+New sprites :
+e_Spr_Hero_DeathGen_Plouf + 27,		// spr.
+
+e_Spr_Itm_Container1_HardSpr + 1,	> ne servira à rien, en fait.
+
+present bkg : rgb = 64 56 48
+
+gfx : héros, anim de résurrection en début de crédit (sauf premier).
+=> Ou en début de vie ?
+gfx : rebel soldier qui grimpe.
+
+
+
+
+.h:
+void Player_Damage(u32 nDamage);	// Ou pas ?
+
+
+
+EdTile0 : Balancer un message d'erreur si une ligne de prm n'est pas correcte :
+Ex : Shot Delay = 28:31		; Délai entre les tirs (* 16 frames).
+> Il manque les 2 points après 31 !
+
+
+bugfix : loop du scroll L2, old et new passés de u32 en s32, vérifier que ça ne bugge pas.
+gen : sécurité : AnmGetImage (et même genre) : si slot == -1, renvoyer SPR_NoSprite ?
+   => voir si ça ne ralentit pas tout.
+
+
+En cours :
+
+
+
+
+
+mars people : on pourrait faire un deuxième type avec la soucoupe. => gfx
+
+vers au plafond (qui tombent sur le joueur ?). gfx à faire.
+sub boss train : the keesi (gfx à faire)
+
+
+
+
+sons : flag pour pouvoir "écraser" un son (bit 15 ou 31 sur la prio ?) : Si on veut joueur le même son, autorise à couper celui en cours et a relancer le même wav. => Tirs de mitrailleuse + soldat en train de crever.
+> même pas besoin du flag en fait, il y aura peu (pas !) de sons identiques à jouer avec une prio différente ou qu'il ne faudrait pas couper.
+prios :
+Tir héros : 20
+Tir ennemi : 10
+Explo : 15
+Mort ennemi : 12
+
+
+
+lev 1 : on peut courir jusqu'au camion sans se faire tirer dessus... (mettre des monstres 14 immobiles ?).
+=> Mettre une phase comme dans la vidéo, avec écran bloqué et des parachutistes qui arrivent.
+
+
+
+
+slug hélico : mettre un peu de fumée de temps à autre ?
+slug submarine : mettre des petites bulles de temps à autre ?
+utiliser u32	gAnm_SubmarineBubble_Dust[] = sur le slug sub.
+
+
+
+ribert : mvt pour phase de bombes. Accel/freinage au bout ?
+
+gfx : autres morts standard dans "msrebelsoldier".
+
+
+
+
+boss1 : avec le tank, toujours assez fragile, et on arrive à se poser à un endroit (une des petites pf) sur laquelle les soldats ne viennent pas tirer.
+
+boss1 : générer un m14 parachute LRAC de temps en temps. (avec le temps plutôt qu'au bout d'un certain nombre ? => humm, il n'en faut pas 50 à la fois...). => en fct des points de vie ?
+boss1 : générer un girida-0 de temps en temps (slt si slug ?)
+boss1 : utiliser la fct pour le nb de M14 et pas la table ?
+boss1 : voir pour décaler ceux qui arrivent de la gauche et les faire apparaitre juste au bord du scroll.
+
+boss 1 : génération des soldats. (test semble ok).
+
+boss 1 : on pourrait faire sortir des soldats de l'emplacement du canon frontal, une fois explosé.
+
+
+
+Boss2B err : Cache full ? (pas revu).
+
+
+
+mini ufo : partir en sens inverse sur les chemins ?
+
+mini ufo 2 : lev 6 et autres (pas lev6, base sous marine), arrive d'en haut (comme les hélicos du lev2), tire et remonte.
+
+mini ufo : gauche/droite ?
+
+
+nouveaux monstres :
+- "iron iso" sur le train ?
+- parachute pour le girida-0.
+- Le monstre qui ressemble à ED209. 2 attaques. On devrait pouvoir le faire en gauche/droite.
+
+
+
+
+loop lev11, voir si on fait le même truc que pour le lev2, même si on ne verra jamais le bug.
+
+
+petit décalage de 1 pixel dans le scroll V quand on est sur une pf mobile ? (il ne faut pas qu'on soit en limite de scroll pour que ça se voie, bien sûr).
+pf mobile, mort, au restart, un petit à coup. (je pense que c'est la chute au moment ou le perso réapparait, pendant une frame le temps que la pf le rattrappe (ptr pf passé à null sur le reinit)).
+
+
+
+
+
+
+!!! TODO !!! faire une grosse verif sur tous les AnmSet, AnmGetImage. Avec la sécurité, on ne doit pas avoir besoin de tests supplémentaires.
+
+
+mst42, voir si on peut mettre des pts de vie différents selon le mst.
+
+
+gfx : L8 : "heavy turret" pour la loco ?
+
+
+
+=> Voir si on peut faire approcher les M14 jusqu'à être dans l'écran. / non : (Quand centre de la zone du côté de l'écran ?).
+ok, zones min et max/ changer la zone min qd mst pas dans l'écran ?
+=> bien tester.
++ vérifier les 2 autres emplacements ou on utilise zonemax[], mais ça à l'air ok. (Chiffre magique pour le shield ?).
+=> et nettoyer aussi.
+
+
+
+
+B3 : canon : détruire au final dans des explosions.
+B3 : cosmétique : core : faire des dusts de cailloux à la destruction ?
+(B3 : faire plusieurs UFO ? à chaque état 1 de plus ? oui mais ils ne font rien...)
+
+
+
+faire une explosion en dust sans son pour les explosions multiples ?
+> ok sur M17
+voir sur semi bosses + bosses + Mst46 (Hair Buster Ribert).
++ voir prio des anims d'explosion ?
+
+Sfx_PlaySfx(e_Sfx_Fx_Explosion2, e_SfxPrio_Explosion);
+DustSet(gAnm_Explosion0_Medium_NoSfx_Dust, nPosX, nPosY, pSpe->nPrio, 0);
+
+//> pour fx
+Sfx_PlaySfx(e_Sfx_Fx_Explosion2, e_SfxPrio_Explosion);
+DustSet(gAnm_Explosion0_Medium_NoSfx_Dust, nPosX, nPosY, pSpe->nPrio, 0);
+//<
+
+
+
+ok, passer par M33/ L11 (+L02) : Les capsules d'armement n'apparaissent pas. Pb de positionnement à l'init ?
+ok/ L5 : explosion des subs, mettre qquelques points.
+ok/ sfx : faire une fonction pour couper les sons quand on quitte la partie. (clear des canaux, ça devrait le faire).
+ok, 4 voies/ clics sfx: Ca doit venir du mixer, baisser les volumes des samples. => passer en 4 voies ? (/4 dans le mixer).
+ok, plus de retour en arrière/ Voir le relâchement du scroll, ça semble repartir bien loin en arrière si on est à gauche et tourné vers la gauche. C'est peut-être une idée.
+
+
+mini bug : quand on quitte le how to play, l'action en cours est stoppée (mais ça risque d'être compliqué à cause du nocontrol de la transition, si je me rappelle bien).
+
+
+non, inutile, le playback n'est pas encore commencé/ sfx : init : mettre clearchannels avant le openaudio.
+ok, nouveau tir/ slug rocket : quand on tire, le son 0x20 se lance en même temps ? C'est parce que le son du tir est dans l'anim de tir : gAnm_SlugRocket_ShotSparkMain ...et dans l'anim de la balle de mitrailleuse !!! => soit nouvelle anim + nouveau tir, soit tenter de couper le son du tir de mitrailleuse dans les anims de tir de la fusée (pb si l'audio se lance pile à ce moment...).
+ok/ sfx splash sur rocket diver !
+ok, sfx dans la balle/ bug : sfx : mitrailleuse, quand 1 tir, 2 sons. Anm, get image, sfx avant la nouvelle image...
+ok/ sfx : zombies : tir + son acide pour le dust.
+ok/ sfx : zombies : mort
+ok/ sfx : meduses
+ok/ sfx : espace : séparation de l'astéroide. / tmp fait.
+ok/ sfx : trouver un son pour le moteur du sous-marin.
+ok/ sfx : caisse d'armement qu'on casse. > wood0 à intégrer
+ok/ sfx : mettre un bruit d'hélico sur le R-Shobu.
+ok/ faire clignoter le nb de vies quand 1UP ?
+ok/ sfx : L8 + L16 : son sur tara.
+ok/ sfx : POW : Thank you.
+
+ sfx : trouver un son pour le vulcan cannon (tous véhicules).
+ sfx : joueur : lance roquette.
+ sfx : B1 : cannon up. Anm = gAnm_Boss1_CannonUp_Shot
+ sfx : squids mort
+ sfx : léger son d'atterrissage pour les sauts du joueur. (faible prio). => non je pense, fait chier.
+ sfx : 1UP.
+
+ sfx : Rumi Aikawa quand elle tombe.
+
+ok/ sfx : rajouter un son de moteur au girida 0. / e_Anm_SfxStop, e_Sfx_Submarine0, / e_Anm_Sfx, e_Sfx_Submarine0, e_SfxPrio_Explosion + 1, => à tester !
+ok/ Renforcer le Girida-0 ? (M26) => en test.
+ok/ sfx : rajouter un son de moteur au truck (m15) quand il arrive ?
+
+ok/ Bug : Jeu terminé, pas de hi score demandé (63040).
+ok/ High score, saisie du nom, faire un truc un peu plus sexy. (Minuscules dans la fonte, sprites en plus (Marco victory ?), etc...).
+ok/ High score, garder le meilleur. A l'init : scorehighest = 0; A la fin d'un crédit ingame : if (score > scorehighest) scorehighest = score; Au game over : prendre scorehighest.
+
+ok/ High Score : Par défaut, remplir les 3 premiers. => Jeu en 1 crédit : 65050.
+> 50000 Colonel
+  45000 Lieutenant-Colonel
+  40000 Major
+  35000 Captain
+  30000 1st Lieutenant
+< 25000 2nd Lieutenant
+
+ok (?)/ Voir comment gérer le ramage.
+
+ok/ Riberts : Rendre invulnérable jusqu'à l'apparition du LRAC.
+
+ok/ cheat : selecteur de niveau
+ok/ lev sel : pb : voir si pas de pb si init en cours de mission ! > tst si niveau de départ n'est pas MISSIONOFFS_LEVELS ?
+ok/ lev sel : il faut initialiser le n° de mission.
+ok/ cheat : weapon select : F5
+ok/ cheat next level ? (F6)
+ok/ Font : Décaler le '1', il faut que le pt de ref commence sur le char. + faire un cas spécial sur le Font_PrintSpc pour faire display(x+2) sur le '1'.
+ok, -8 pix sur pf/ gfx : lev5 : voir si on peut monter un peu un pf en diagonale.
+ok/ gfx : nouvelles pf lev6
+ok/ half boss méduse : résistance.
+ok, décalé le départ de 1/ monstre sous marin dans docks entrance, petit saut de 1 pix désagréable.
+ok/ loadlevel : remplacer le nimp' des strcat/strcpy par snprintf.
+ok/ L2 : pas cher, faire des piranhas sur la fin du niveau (= m31 squids). avec un mouvement vertical en plus ?
+bof, ne rend pas génial/ L2 : mettre les méduses en rotation ?
+ok/ L2 : grosse méduse, empêcher de tuer les petites méduses quand trop près du corps (pour les bombes qui les tuent toutes d'un coup !)
+ok/ Checksum levels : on peut tester ça une fois pour toutes en début de jeu, lecture de tous les fichiers + checksum.
+ok/ L2 : Pas de son de tir sur les tara ?
+ok/ L2 : Problème prio son sur boss 2A, explosions mangent le son des tirs.
+	e_SfxPrio_Enemy_Shot = 10,
+	e_SfxPrio_Enemy_Death = 12,
+	e_SfxPrio_Explosion = 15,
+	e_SfxPrio_Hero_Shot = 20,
+	Sfx_PlaySfx(nSfxNo, e_SfxPrio_30);	// Sfx. Slug engine.
+	Sfx_PlaySfx(e_Sfx_Shot_MiniRocket, e_SfxPrio_Hero_Shot);	// !!changer!!	// Slug bouton C.
+ok/ L8 : Lâcher qques parachutistes quand on arrive dans le coin de la loco.
+ok/ L2 : Son sur la flame du B2B.
+ok/ L2 B2B : Son pour lacher les mines (mettre aussi sur Ribert).
+ok/ 1 vie plus souvent ? 10000, c'est beaucoup.
+ok/ laisser s'afficher un peu le "continue" ? (pas de clic sur A sans affichage).
+ok/ petit bug : quand on quitte l'intro au bout du timer pour la demo, si on appuie sur une flèche pendant la fermeture, on commence le jeu.
+ok/ slugs : limiter le nb de bombes à l'init avec la constante.
+ok/ M14 : Slug : Coup de crosse => Mort immédiate. Il faudrait un dégat normal.
+
+
+hidden part : guru meditation
+
+ok/ equ tir player swim bombe.
+Player swim bombe : Décaler l'explosion vers le bas.
+
+M31 piranhas : mettre le coup de couteau.
+/*
+tst / revoir pour sous l'eau, le test de distance n'est pas bon.
+	Mst_ProximityCheck(pMst);	// Donne le signal au joueur pour un éventuel coup de couteau.
+	Mst_ProximityCheck(pMst);	// Donne le signal au joueur pour un éventuel coup de couteau.
+
+	// Tir ?
+	Mst_ShotLaunch(pMst, nSpr, gpMST7_ShotTb[pSpe->nType], gpMST7_AnmShotFxTb[pSpe->nType]);
+
+	// Se prend un tir ?
+	u32	nDamage;
+	// Version avec PV et avec couteau.
+	nDamage = Mst_ShotCheckLife(nSpr, pMst->nPosX, pMst->nPosY, &pSpe->nHitCnt, &pSpe->nLife);
+	nDamage |= Mst_KnifeHitCheck(pMst, nSpr);	// Le coup de couteau tue le monstre en un coup.
+	if (nDamage)
+	{
+*/
+
+
+
+M48 : génération des soldats : trouver un truc pour le coup du monstre qui sort de l'écran, pour ne pas regénérer des soldats en boucle. Utiliser une item de quête ?
+ok/ M48 : Niveau avant L2, cacher l'hélico dans une maison ? Modifier le L7 Rock (m48) pour ça. + gfx.
+
+L7 : Grosse méduse : On ne peut pas toucher les petites pendant le "grossissement" ?
+
+
+
+m5 + m26 : gScrollPos.nLastPosX = gnScrollLimitXMin + (((SCR_Width / 16) / 3) << 12); > faire une constante en .h ?
+
+
+Boss 2B : Ne pas tirer si héros mort ?
+
+
+
+mines qui tombent du haut dans niveau sous-marin.
+== fin de niveau sub : anim de plouf vers le bas depuis le haut de l'écran et faire tomber des cailloux sur le joueur (ou des mines inertes ?). + mettre plein de mines devant la sortie.
+
+
+
+
+espace, faire arriver des mst par vagues de 3 côte à côte. (voir vidéo, comme dans goldrunner !).
+
+
+
+
+mars_people à une certaine hauteur comme m14 ?
+
+
+
+.h :
+u32 MstOnScreenNb(u32 nMstType, s32 nBlkOffset);
+
+
+
+rumi : boss1 : ne pas larguer sous les pf ?
+
+m14 : revoir les Mst_ShotCheckHit et les flips X. les tests sont faits sans flip. On doit pouvoir mettre le flip au moment du getimage.
+
+lev 6 : on pourrait faire arriver les mars people qui volent des tubes, qui se transformeraient en gauche/droite ensuite.
+
+mst15 : génération du girida, dégager le tableau et passer par un u32.
+ou pas ? => Le tableau fonctionnera en Big endian, le u32 non. => revoir les autres ?
+
+ok/ Slugs, -1 sur prio d'affichage à cause du dessus/dessous sur slug roquette sous mst47. Vérifier dans le reste du jeu si ça ne pose pas pb.
+
+
+
+
+
+
+
+Masknell : phase boss, premier "tourné" un peu violent.
+
+masknell : drop item. => ok dans l'air (L02).
+
+Masknell : pour niveaux normaux. (arrive d'un côté (penché 3), largue une bombe, dégage vers le haut (penché 0)).
+
+mst14 : parachute : Leur permettre de sauter si près du sol. => Bof.
+
+tara ok/ Faire un masknell et un tara pour les niveaux normaux, qui bombardent le joueur.
+faire un masknell mode tara pour le lev2, en séquence ???
+
+
+
+
+
+
+traces de pas dans le sable quand accroupi ? => hmmm, ça risque de ne pas rendre terrible dans l'eau.
+
+
+mst23 : heros : Mort écrasé, le faire sauter ?
+
+
+voir tirs mortar : quand ils vont loin, sur la fin, la chute semble bizarre (parce que l'avance est constante). Voir s'il ne faudrait pas "amortir" le mvt x.
+
+
+
+
+Rajouter au mst 9 pour splash sur l'attente. => pas possible directement, pas de code de collision. Voir si on stocke un code de col dans le mst9.
+
+
+Héros : Changement d'arme, Balancer l'arme en cours (sauf le flingue). Faire ça dans le setweapon. + un flag pour ne pas faire ça à la perte d'une vie.
+Changement d'arme, balancer l'arme en cours en tournant. / voir pour réutiliser la table pHeroWeaponDust.
+
+lev 2 : nuage de moustiques. (gfx à faire).
+
+
+voir init Gnd et LastGnd ?
+voir s'il ne faudrait pas le flag de palette en plus des x et y avec la def de SPR_NoSprite ?
+
+
+
+player : faire un takeoffdust() pour l'eau ? => ça rend bien. => pas avec gnd==0 et lastgnd!=0, car saut => les 2 sont mis à zéro avant d'arriver au test.
+
+
+poisson qui saute pour le niveau 1 : On peut en faire un vertical, et un qui fait un arc de cercle. (gfx à faire).
+
+
+Prévoir un tremblement de l'écran pendant les grosses explosions (boss et autres).
+
+
+mst17 (explosions) : 1 sur 2 en haut / en bas ?
+
+
+??? Ca ne fonctionne pas pour les tirs a répétition (clef d'anim de tir). Avec l'éjection de l'arme ça devrait le faire.  /voir fin de tir sous l'eau ? Il me semble que j'avais fait un truc pour ça, en naked > ok pour tous les cas.
+
+
+Slug_OutSign() : voir prm 0 sur cette ligne (pourquoi pas gshoot.nvehicletype ?) : MstSlug_EntrancePtGet(e_HeroVehicle_Submarine - e_HeroVehicle_SlugBase, &nOffsX, &nOffsY);
+
+
+non abandon/ L11 - grosses boules qui génèrent des...  (gfx à faire)
+non abandon/ L11 - ...mars people soucoupes.           (gfx à faire)
+
+
+Bonus : Points qui s'affichent quand on les ramasse.
+
+
+proximity : à la nage, tester un peu plus loin en x, moins loin en y (surtout génant par en dessous). (mettre une variable dans gShoot ?). (Y aura t-il des monstres à toucher au couteau au final ?)
+
+
+voir pour enlever le flick quand déplacement latéral avec le tank par exemple.
+
+
+mst14 : truc pour ne pas qu'ils se superposent ? (un petit offset random dans la zone ?)
+mst 14 : bit pour en faire des suicidaires qui foncent sur le joueur ?
+rifle : rajouter un berzerk (?)
+mst 14 : prévoir la sortie à genoux dans le niveau 1 (1 bit ?). + générateur ? => utiliser le "special init" fait depuis, mettre le mst dans une phase spéciale.
+mst 14 : mortar, tir au pistolet si héros trop près ?
+
+
+e_Cheat_Credits = 1 << 4,	// passer directement dans le screen qui va bien ?
+peut-être faire un OR dans la routine de menu, si bit de credits => on le cleare et on passe au menu credits.
+ou sinon voir si on place un flag qqpart.
+
+
+
+squid : voir si on fait un flag pour les faire se déplacer légèrement vers le joueur ? (auto ?)
+squid : en mettre en sens inverse ?
+Idem pour les méduses (en vertical).
+
+
+Plus tard : fire : on pourrait supprimer une des deux variables : ex : nUsed = n°du tir + 1. (voir même rajouter un tir d'index 0 pas utilisé pour éviter le +1 -1).
+u8	nUsed;			// 0 = slot vide, 1 = slot occupé.
+u8	nTbIdx;			// Index dans gpFireTable == n° du tir.
+
+
+
+Limiter la fréquence de tir des bombes des slugs. (ou pas ?)
+
+En cours : Player_Damage. Dégats ok / faire différentes morts ? rajouter du sang ?
+
+monstres : Arrêter de tirer si héros mort. => utiliser le flag.
+
+voir si on met le monstre 1 (mars people) sous l'eau (rend pas mal en fait), et prévoir de pouvoir le mettre en flip Y ?
+
+HUD : un N/A pour les bombes sous l'eau ?
+
+en cours : (devrait fonctionner aussi pour les ennemis).
+Gen_LandDust (passer lastgnd et gnd ? comme ça on pourrait faire land et décollage en même temps).
+Gen_StepDust
+traces de pas et autres merdouilles (dust d'atterrissage, etc) : faire une fct en passant la col et un (x,y), on pourra appeler la même fct pour les ennemis.
+
+mini sub 88 : gfx !
+mini sub 88 : passage en bas, tirs réguliers vers le haut avec explosions au hasard sur la hauteur (ou faire 2 tirs + 2 anims ? Un court qui explose vers le bas, un long qui explose vers le haut de l'écran ?).
+
+semi-boss : deux camions troopers, un arrive de chaque côté avec scroll bloqué. => pb : hard spr ne gèrent pas les flips.
+
+mst18 : en cours... voir si on fait le coup du nombre d'états.
+
+rajouter des points dans l'explosion en carré ? => Quand on explose un objet (sous marin lv 5, maisons lv 13...), on récupère des points.
+=> ou dans le mst qui copie le bkg ?
+
+
+
+mst blkbkg2, gérer le cas des items de quête placés quand le monstre n'est pas encore là ?
+
+> HardSpr_TestHt : faire un sprite de test à la con qui fait une pyramide, pour test au niveau du sol et vérif qu'on monte bien dessus.
+
+
+rifle soldier : si on le dépasse, wait up, court vers le joueur et frappe. Si trop loin, ou après x coups, tire debout.
+mortar : en faire un second, arrive en courant. Quand à distance, se pose et tire. Quand plyr trop près, fuite effrayé (reb_std0).
+(?)Rifle : si joueur trop près, faire une fuite : çad surprise, puis court jusqu'à tomber sur du dur, ou etre en dehors de l'écran. Si dur, demi-tour.
+(?)Soldier mortier (Eng : Mortar) : idem rifle.
+
+changement de level (inter-level) : conserver l'arme et les munitions en cours ! + le nombre de vies.
+
+mst : zombie, ne pas tirer sans arrêt (une anim de pause dans l'anim de tir ?).
+mst : zombie, faire des pauses dans la marche.
+mst : zombie, faire qu'on puisse les tuer au shotgun et à la flame quand ils sont couchés. (il faut des zones de col).
+zombie : voir si on peut supprimer la "glisse". (faire avancer d'un 'step' à chaque image ? Car Pt fixe + gros saut à la fin va poser un problème (mort qui saute, etc...)).
+
+héros - bug : mort quand accroupi (à cause d'un bloc dur au dessus de sa tête), réapparait debout. => voir si le cas arrive dans le jeu ! C'est pas lame, mais je crois qu'on a aucun décor ou le perso est forcé accroupi.
+
+phase e_Game_Continue, (NON : si oui, passer la variable nContinueUsed à 1. => ensuite OR avec un bit dans les high scores.) > Compter le nb de continue + le mettre dans la table des high scores.
+
+Debris de zombie/momie/etc..., générer un monstre x (ou pas ? un dust ?).
+Selon le type, 4 anims de débris.
+Direction, par rapport à celle du joueur (à tester, parce que le joueur peut se déplacer entre le moment ou il tire et le moment ou le tir touche) / Sinon, par rapport au sens du tir.
+MS : dès qu'on touche du dur en x, vx = 0.
+
+Mst_ShotCheckHit : gérer des pts de vie.
+Mst_ShotCheckHit : effets (trace de sang pour balle, bouts qui volent pour le shotgun...).
+Mst_ShotCheckHit : voir pour le dégat de type "knife", pas de sang ou sang spécial ?
+
+faire des variables pour la sortie de map avec le scroll, pour limiter les mouvements sur x et y. (??)
+
+scroll : loops dans les niveaux normaux (H et V). Reculer d'un nombre d'écrans pour pas d'update du décor (ça risque de merdoyer dans le différentiel, il ne faudra peut-être faire ça qu'avec des fonds fixes).
+
+non/ lvl8 (si j'ai du temps) : faire un soldat à la con avec une bulle "I'm the king of the world!" en tête de train. (voire : programmer une bulle ? avec une petite fonte ? (un rectangle avec partie D, G, et centre qu'on répète)).
+
+lvl8 : niveau du train, faire démarrer le train quand on entre dans la forêt. (pas simple, il faudrait faire démarrer les anims de blocs à ce moment...).
+lvl8 : plusieurs loops ?
+
+
+mst, pour les faire plus résistants (demi-boss, boss), ne pas prendre en compte les dégats pendant le hit (compteur).
+
+
+spr : plusieurs héros, capturer toutes les planches de marco, puis toutes les planches de fio. A l'affichage, faire juste un + offset en fonction du héros joué.
+spr : plusieurs héros : Toutes les anims de Tarma sont dispo et identiques (il y a même le zombie et la momie).
+spr : plusieurs héros : fio, anims différentes. Par contre, Eri semble ok.
+
+cache : finir petite optim (freebig) voir si c'est bien en situation "normale".
+cache : si pas de hash, on peut virer le remplissage/nettoyage des cases après la première. (faire juste tb[]=6 et pas {6,5,4,3,2,1}).
+
+???? FireHitCheck : Il va falloir un flag pour dire qu'on ne doit pas supprimer le tir / OU on fera les tests des rembardes seulement avec les grenades => tester uniquement certains tirs.
+=> faire un FireHitCheck_NoRemove() pour l'occasion.
+
+ennemis : une table générale avec toutes les anims possibles ? (mort générique, mort fusil à pompe, mort brulé)...
+
+scroll : voir si pas mal de mer, surtout sur le x.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+tirs : revoir l'initialisation de la gravité.
+
+tirs : laser ?
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+mst : prévoir un respawn, voir si on fait une phase spéciale, qui atend x frames avant de passer en sleep. => si le mst est déjà dans la zone écran, il n'entrera pas.
+
+mst : mummy : crache : faire jouer l'anim qui loope par le mst, + un dust pour la disparition quand elle intervient. Touché avec playerhit / voire tester juste le contact > momification.
+
+??? faire un SprCheckCol avec des zones sélectionnables (si on fait le couteau par exemple => ou alors on génère un tir ?).
+
+player : Table accelérations/ralentissements en fonction de la surface.
+
+mst : prévoir un checkpoint/point de restart (si on tombe dans des trous ?).
+
+plus tard : anims : voir si on pourrait sauver des bytes pour les temps, etc. (avec une macro pour sauver les sprites ANM_QUAD(sprno)).
+plus tard : spr : coefs de zoom négatifs ?
+
+
+EdTile : load : faire un malloc de la taille du fichier pour buffer > vérifier si c'est fait.
+EdTile : idem sauvegarde. > boaf, sauvé section par section, ça serait étonnant de dépasser...
+EdTile : prévoir un système pour les blocs animés. Relire un fichier texte, les sauver, afficher une croix rouge sur les blocs à ne pas utiliser et un carré rouge autour de ceux de l'anim.
+
+===============================================================================
+
+non/ + gfx : éclair des zombies pour tuer le héros s'il n'avance pas. // => règle en partie le problème du mec qui s'arrête dans un endroit tranquille. // non/ Ou fantôme blanc de Bubble Bobble ?
+ok/ compteur d'inactivité. Au bout de 10 sec, GO!. Encore 3-5 sec, 5 4 3 2 1 0 + mort. => 10 sec / 10 sec go / 10 sec cnt / Abort.
+ok, ça marchait, mais maintenant plus de mort/ pb, avec les cheats, ne meure pas. Passer l'invulnérabilité à 0 ?
+ok/ sauf rocket et helico no exit.
+ok/ + ne pas compter si victoire.
+ok/ sortir directement en game over ?
+ok/ + faire un code "abort" ?
+ok/ invulnérabilité quand abort.
+ok/ M47 : chapeau de la fusée lev 9, arrêter de générer des parachutistes au bout d'un moment.
+ok/ M15 : truck : limiter le nombre de soldats au bout d'un moment.
+ok/ M15 : truck : avec ma modif du M14, remettre des soldats à gauche de temps en temps (1 sur 4).
+ok, patch dans VehicleSet/ M51 : montée/descente dans le slug, on a le contrôle pendant un court instant, parce qu'on doit remettre le flag autopilot à 0 au changement de vehicule.
+ok, j'ai forcé v=0 pour le tank/ slug tank : petit bug : si on fait bas + B pour sortir en bord de plateforme avant que le tank ne soit arrêté, avec l'élan du ralentissement, le char peut tomber et se retrouver en l'air. (Vu sur les pf du boss 1).
+ok, touché sans dégats/ M47 : On peut le toucher de loin.
+ok/ fichier de conf : directions, boutons, mode video.
+ok/ Virer les define des BUTTONA, etc..
+ok, F5 entrée en mode saisie/ ensuite revoir les cheats : soit F5 = mode entrée cheat, ou commencer par encoder F5 (interdit dans les touches) dans les codes, un truc du genre.
+ok/ PSDLoadToSDL => pour lire un PSD et le mettre dans une surface SDL.
+ok/ Mettre les gfx bmp restants en psd.
+ok/ Faire une transit à bandes verticales (20 bandes x 16 pixels), pour credits et how to play.
+ok/ T4 : reste à faire le define dans le .h + faire un define pour la taille de la table.
+ok, 2 phrases/ M51 : plusieurs phrases, voir si on coupe en plusieurs phrases ou si on met un symbole.
+ok, path gnd/ M51 : avancer jusqu'à un tank.
+non/ Voir pour faire une variable pour initialiser un niveau exprès avec l'étoile, sans score (?).
+ok/ Perso, faire un autopilot spécial pour le naked. Avec 0x80, pas de contrôle, bits mis par un monstre.
+ok/ Modifier le game() du main, faire le game over et les credits en dehors => on peut appeler game pour le how to play et les credits.
+ok/ ExgPlatformerInit, passer un prm = index dans la table du départ.
+ok/ table des levels : Mettre how to play , -1, credit, -1, levels. => 0 = how to play / 2 = credits / 4 = levels.
+ok/ Remplacer 1 par F1 ?
+ok/ Vie supplémentaire tous les 10000 pts.
+ok/ L2 : voir vitesse des avions, == à celle des nuages. Pas top.
+ok, déco slt, m48/ - moto qui sort du wagon : pb, pas d'anim de tir du tireur vers le haut... + pas de spr incliné pour le side car...
+ok, avec blocs + codes/ lev8 : mega bug, on ouvre le wagon, on saute sur la pf, on s'accroupi en avançant et hop, téléportation au dessus du wagon.
+ok,  avec m48/ M07 : Pouvoir les faire arriver de derrière ? (pour les mars people dans le mothership).
+ok/ - Brain bot. gfx + gauche/droite.
+ok/ m48, porte du train L8.
+ok/ Aikawa Rumi : gfx : recaler les sprites de marche, anim à l'envers...
+ok/ Prm du mst : Arme à donner.
+ok/ héros : mort : ne pas clearer le bit de flip ? (très chiant sur lev6). (En fct du type de scroll + si scroll locké).
+ok/ M48 : pts de vie sur l'ordinateur + explosion quand on le casse.
+ok/ monoeye > m48 : commencé.
+ok/ Générateur L14 M48.
+ok/ +m7 : init en dehors de l'écran : zones en u16 => ça merde, le zone out jette le mst tt de suite. => u16 > s16, semble ok.
+ok/ L6 : rajouter explosions sur la porte.
+ok/ m7 : BrainBot
+ok/ Bug M42 : l14 porte explose, cache en rouge.
+ok/ tirs : e_Shot_Enemy_BrainBot_RingLow, e_Shot_Enemy_BrainBot_RingHigh,
+ok/ brainbot : gfx => rallonger le tir sup vers le bas + le passer en prio au dessus du joueur.
+ok/ Masknell : semi-BOSS.
+ok (semble) / voir interface.c, ligne 389 : gEMS.nPrisonerAnm = AnmSet(gAnm_POW_Salute, -1); >> ca devrait être je pense : gEMS.nPrisonerAnm = AnmSet(gAnm_POW_Salute, gEMS.nPrisonerAnm);
+ok, transformation/ shield : Un tir ?
+ok/ Niveaux dans le vaisseau à la place de l'usine.
+ok/ M48 mothership : Cas de mort du héros ! Ne plus le bouger.
+ok/ mini-ufo / mars people : virer le respawn, mais : mettre plus de points de vie MAIS bloquer le compteur d'init des tirs si hitcnt.
+tant pis/ M07 - c'est de la merde. Voir pour mettre ça au niveau du général, mais ce sera merdique dans tous les cas. Ou alors tout refaire.
+ok/ spr + anim à intégrer : walk = 16 / fall = 15 (+ salut) / flee = 9 / loop sur les 8 derniers.
+ok/ Voir glissement des zombies. Déplacer à chaque nouvelle image, et hop !
+ok/ Voir la sortie de flip x, avance car nouvelle image.
+ok/ Retimer les anims.
+move changé, doit être ok/ Glitch 1 frame quand contact avec un mur ? (voir l8 dans le wagon). Recalage de la zone dans le LEV7 général ?
+ok/ m14 : (shield ?) : on pourrait utiliser le compteur d'inactivité du joueur pour déclencher un tir. => shield jette le bouclier et se transforme en gunner (si le perso est à hauteur bien sûr).
+ok/ shield, coup de shotgun + cast en gunner, il doit y avoir une frame ou on affiche le dust du bouclier + le sprite et le bouclier.
+ok/ M49 Sous-marin suspendu dans la base sous-marine.
+ok/ m49 : faire apparaitre des soldats à droite et à gauche de temps en temps.
+ok/ sub suspendu lev5 : on pourrait faire glisser le sub pour qu'il se place au dessus du joueur, ou au moins pour qu'il arrive de la gauche.
+ok/ m49 : ralentir le mvt à la fin de l'arrivée.
+ok/ sub suspendu lev5 : mettre un LRAC sur l'avant du sub, comme pour le ribert.
+ok/ saut m14 depuis le mini sub.
+ok/ sub46LRAC - flip x du monstre, sprdisplay du dust fait en fct du flip du mst mère. => pas bon.
+ok/ sub46LRAC - rajouter un code d'init spéciale dans le m14.
+ok/ m49 : empêcher le LRAC de tirer tant que mvt du sub pas fini. (forcer le compteur !)
+ok/ m49 : réapparition du monstre mort, ne pas mettre le LRAC.
+ok/ rebel soldier sur la chaise longue. (sur le toit du train).
+non, explosion/ gfx : un canon détruit pour le boss 1. (ou le faire rentrer dans l'avion vers la gauche ?). => Ou faire une explosion et des débris !
+ok/ > EdTile0 : Bug possiblement plantant :
+vu lors d'un remplacement d'une planche par une autre, la nouvelle étant beaucoup plus petite et avec les codes ON.
+On était sur le plan de la planche en question, très bas, beaucoup plus bas que la taille de la nouvelle planche.
+Les codes affichaient de la mémoire (ce qui est un possible crash), les blocs affichaient n'importe quoi aussi.
+<
+ok/ nuages (petits) en sprites lev 2. e_Spr_Lev2_Clouds + 2
+ok/ mst7 : petit décalage de 1 pixel à la sortie du flip.
+ok/ gfx : soldat qui saute (plonge)
+ok/ SMst7Tb, SMst14Tb, SMst48Tb... Faire une struct commune.
+ok/ mothership à la fin de l'espace. => Dans Mst 48.
+non, mst uniques, traitement complet dans les sous-routines/ m48, voir pour préparer les phases + org phase.
+ok, structs packées en 1/ voir si la directive suivante ne serait pas bien dans l'éditeur et pour relire les niveaux :
+	#pragma pack(1,2 ou 4, vide pour remettre part défaut)
+	Ou alors avec le flag -m32 ? (+ peut-être #pragma pack(2) )
+ok/ sensor mine, recapturer gfx, +1 spr, séquence complète.
+ok/ EdTile0 : Debug du scroll, if comme dans mini slug.
+ok/ r-shobu : Dégager l'addition du noffsy, rajouter l'offset à la coordonnée y et retirer à la fin.
+ok/ shield : Gérer quand même si on [[reçoit]] un coup de couteau, même si ce n'est pas le shield qui l'a déclenché (si bouclier, rien. Mort sinon).
+ok/ transit vers espace : on pourrait faire juste un gros sprite qui masque, qui disparait avec des explosions et des débris. > pendant ce temps, on peut générer des soldats (qui arrivent de la gauche et/ou en parachute).
+ok/ e_Mst47_Lev9RocketTop0
+ok, mars people/ m47 : génerer des soldats et des mars people quand le chapeau disparait ?
+non, assez occupé avec les parachutistes/ m47 : faire apparaitre un girida-0 à gauche ?
+ok/ m47 : générer des m14 parachutistes pour occuper le joueur. + scroll lock ?
+ok/ m47 : zone de col trop petite. Grenade + saut, passe au dessus.
+ok/ m47 : explosions pas trop mal, mais retoucher le gfx du chapeau pour écartement final.
+ok/ m47 : si on ne peut pas cacher la flèche IN, générer le slug au moment de l'explosion. (+ au cas où, si ça merde, passer directement à la suite ? => Non, ça ne merdera pas.).
+non, on ne s'en sort pas/*
+chapeau : e_Prio_Ennemies + (i <= 2 ? 0 : 1)
+boss explo : e_Prio_Ennemies+3
+grosses explo : e_Prio_DustOver + 0, 1 et 2
+flèche IN : e_Prio_DustOver
+Dust Tirs : e_Prio_Tirs-1
+	e_Prio_EnnemiesBg = 16,		// Plateformes, etc... derrière le reste
+	e_Prio_DustUnder = 24,
+	e_Prio_Ennemies = 32,		// 32 valeurs.
+	e_Prio_DustOver = e_Prio_Ennemies + 32 + 16,
+	e_Prio_Tirs = 140,
+	e_Prio_Joueur = 192,
+*/
+ok/ masknell : phase boss : petite oscillation.
+ok/ Masknell : boss : rendre les non leader non touchables.
+ok/ Masknell : Vie en fct du type. (10 pour L2, xx pour L9 + dégats minorés je pense).
+ok/ gauche/droite : respawn des mars people ?
+ok, si degats > 5 le bouclier dégage/ shield soldier : Pts de vie au bouclier, au bout de x touchettes, dégage et le soldier se transforme en std.
+ok/ shield soldier : voir si on fait une attaque de contact ou pas.
+ok/ shield : test des dégats. Si 10 => grenade. Mort immédiate.
+ok/ shield : anim de "block".
+ok/ shield soldier : Mettre une zone de col plus large. Si de face, touche le bouclier, si de dos, touche le perso.
+ok/ shield : ne pas déclencher le coup de couteau du héros (?)
+ok/ cmd.txt : m14 = mettre un reserved, puis le shield.
+ok/ mst15 : voir si on fait un compteur (plutôt que gnFrame) pour l'apparition des soldats ou pas.
+ok/ mst 7 : pour respawn, ne pas faire de screenout !
+ok/ mst7 : BUG : en bordure de zone, avec le flip/flip/flip, on peut entrainer le monstre en dehors de sa zone !
+ok/ mst7 : vitesse 'énervé' quand joueur trop près. > énervé dès qu'on est à distance ?
+hmmm, compliqué à intégrer (ce monstre est déjà bien pourri)/ mst7 : mars people, recul quand héros trop près ? (au lieu de passer derrière et de flipper ?).
+ok (pas parfait, mais ça ira)/ mst7 : flip/flip/flip : quand on est en bout de zone, côté externe, et proche du joueur.
+ok/ mst7 : mars people : respawn ?
+ok/ mst7 : si pv et touché, on se tourne vers le joueur.
+non/ mst7 : mars people : mettre un flip random de temps à autre ? => Bof.
+ok/ mst7 : faire avancer le mst si pas dans l'écran.
+ok/ mst 7 : arrêter le tir si perso trop près ? (remettre le mvt, mais pas le flip...).
+ok/ ribert : target de la roquette.
+ok/ gauche/droite : ne pas tirer si en dehors de l'écran (voir mars people lev6).
+ok/ mini ufo 1 : lev6 : suit des chemins.
+ok/ mini ufo : ne pas tirer quand héros mort.
+ok/ mini ufo : faire la phase de tir.
+ok/ mini ufo : points de vie.
+non, aucun monstre ne fait ça/ mini ufo : touché du joueur => dégats.
+non/ Lev2 : accélérer les balles des taras et hélicos. (nouveau tir ? chgt de vitesse ?)
+non/ //gAnm_RebSoldier_LRAC_Shot_Dust	/ remplacer par gAnm_BlackSmoke_Dust sur le ribert ?
+ok/ sub boss air : hair buster ribert :
+ok/ ribert : faire sauter le soldat à la fin (dust, plongeon ou effroi). + gfx. > commencé. saut sympa, voir pour synchroniser l'anim de saut avec le petit rebond de la planche quand elle se replie, ça donne une effet plongeoir.
+ok/ ribert : pas de touché pendant déplacement haut/bas (lrac 1 et 2).
+>
+e_Spr_RebSoldier_Std_Flee : premier spr = effroi
+e_Spr_RebSoldier_Std_JumpDive + 12,
+jump dive : 0-6 sol / 7-11 air
+<
+ok/ ribert : mvt pour phase de bombes.
+ok, petit délai en plus dans l'explosion de la dernière tourelle/ out of anim slots ? (sur boss 2 ?) => En fait arrive quand il y a plein de tirs de tourelle qui disparaissent en dust au moment ou la tourelle eclate et que le boss explose.
+ok/ boss 2 Front
+ok/ boss 2 Back
+ok/ helico lev2 : Quand mort, on repasse à 10 bombes (et nombre de balles du naked si pas flingue aussi). Ca doit venir du changement de vehicule. => voir avec la fusée, ça doit être pareil. > oui. ==> copier le nb de bombes du slug dans celles du joueur, comme le joueur est mort et va être réinitialisé, ça ne devrait pas poser de pb. > dans Slug_GetOut, ok.
+ok, reglé dans DeathManage, si gpMstQuestItems[MST_QUEST_ITEM_NEXT_LEVEL], on fait +1 vie/ lev2 : mort en hélico (no exit) après avoir battu le dernier boss et avec 0 vies, ne réapparait pas. => (comme on passe en mode "continue" (ou game over), je crois qu'on va s'en ficher. Le joueur n'a qu'à pas se faire toucher.) ==> plus de pb avec le OR.
+oui et non (une fct xxx2, mais la xxx n'appelle pas la xxx2, car énormément utilisée)/ faire un truc général pour la réduction des dégats. > fait pour 'rect', voir si on fait pareil pour le touché normal ou pas.
+ok/ b2a : tourelles mettre de la fumée noire quand détruites, comme ribert, avec mvt vers la droite.
+ok/ b2a : tourelles, dégats minorés.
+ok/ b2b : décaler le départ vers la gauche, le mst block fait sauter le joueur vers la droite si complètement à gauche quand le boss arrive.
+ok, loop pose pb, fait comme ça/ b2b : voir comment faire le loop des anims de flammes : loop, ou laisser comme c'est.
+ok/ b2a : vu sur linux : en train de tirer avec les tourelles depuis la phase d'avance => out of anim slots.
+non/ b2 : voir pour les phases "distance", si on génère les monstres depuis le boss, ou si on stoppe au bout d'un certain nombre de blocs depuis l'apparition (je pense).
+ok/ b2 : b2a génère b2b ?
+ok/ b2b : première phase, faire passer le B52 en fond. + faire gfx.
+ok/ spr : files : ok sur Linux et Win. Alignement des structs pas fait, mais semble ok.
+ok/ spr : files : mettre un checksum.
+ok/ b2b : gfx : rajouter rect de col sur début de la flamme pour coupure.
+ok/ b2a : tirs des tourelles.
+ok/ b2a : explosions + decay.
+ok/ boss2B : touché du joueur avec les flammes.
+ok/ boss2B : explosions intermédiaires ? entre chaque changement d'état ?
+ok/ boss2B : explosions de fin + decay.
+ok/ boss2B : faire un rect de col au niveau de la trappe.
+non, géré autrement/ boss2A : on peut faire plusieurs anims pour les pilotes. (normal, droite(monte), gauche(descend), recule). 0 = normal / 0 > 3 = recule / 4 > 6 = droite/monte / 7 > 9 = gauche/descend
+ok/ boss2B : inclinaison des ailes. (variable qui s'incrémente).
+ok/ B2 : sortir la fonction de haut/bas, commune avec B2A
+ok/ boss2A : sortir la gestion des tourelles (comme canons frontaux).
+ok/ e_Shot_Enemy_HairBusterRibert_Mine,
+ok/ HBR : Clap porte qui se referme en dust.
+ok/ boss2A : faire une première avance pour les canon frontaux, puis une fois détruits, faire une seconde avance pour découvrir les tourelles.
+ok/ boss2A : avance, diminuer la vitesse.
+info/ boss2A : centre de la tourelle : x, y-27.
+ok/ boss1 : mettre invulnérable pendant les phases d'explosion, comme ribert.
+ok/ b2a tourelle, si héros meurt, ne plus tourner.
+ok/ boss2A : "collé" du joueur pendant l'approche.
+non/ boss2B : tourelle sur le ventilateur ? => Hmmm, les tirs vont passer au travers de la queue de l'avion...
+ok, je garde comme c'est. Il y a des variables stockées en plus, mais c'est pas grave.
+>
+Hi scores : quoique, dans MS, c'est score + nom seulement...
+//	u8	nMission;  //	u8	nCredits;  //gGameVar.nContinueUsed;   //gGameVar.nMissionNo;
+HiSc: Affichage high scores.
+HiSc: Faire/revoir l'affichage des high-scores. + col mission + col nb continue. (ou pas ?).
+<
+non/ transit vers espace : voir si on fait le haut de la fusée en hard sprite (+ éventuel plan de masquage pour le bas).
+non/ > faire la fusée qui décolle ? + la séparation dans l'espace ?
+ok/ bug : slug sous-marin, à cause de la correction de la table de sin, on déborde et on affiche un spr qu'il ne faut pas.
+ok/ boss1 : Descendre les dégats, faire 1 pour les balles, 2 pour les explosions (ou 3, mais pas 10). Ou couper les dégats en 2 ? (+ limite à 3) => parce qu'il y a le shotgun quand même.
+ok/ boss 1 : passage en mort + timing pour passage en victoire.
+ok, + spr, plus joli/ mst14 : LRAC : parachute, mettre le LRAC dans le dos. => non, frame de saut avec LRAC. => mauvaise anim initialisée, revoir.
+non, ça fonctionne bien, mais parfois caché par les explosions/ boss1 : Quand meurt, le canon vertical disparait ?
+ok/ fin lev 1, girida-0 se superposent (prio en regardant combien il y en a ?).
+ok/ "bug" : mst 15 fin de lev 1 : si on court sans tuer les mst 14, le camion n'en lâche pas. (parce qu'il en reste plein).
+ok/ L02 : masknell qui se mettent à hauteur du joueur puis dégagent.
+ok/ tara qui fonce sur le joueur, accélérer une fois le joueur dépassé.
+ok, fixed/ Masknell : semi-BOSS : s'éloignent au fur et à mesure... => décalage vers la gauche.
+ok, fixed/ + idem lev 11. => il y a un 256 dans cos[0]. En mettant 255 à la place, ça règle le problème. Voir si on essaye de corriger la table ?
+ok/ => Voir ce que ça donne en mettant 256 et -256 aux valeurs extrèmes ?
+ok/ calculer la table et l'inclure ?
+ok/ corriger les arrivées des high scores avec la table et 256.
+ok + flipx sur les dusts des tirs/ tir héros : lance flames : faire une fin de tir (le tir s'arrêtera sur l'ennemi touché).
+ok/ NON, toujours pas reglé avec les chemins inclinés... (lev09) > Ca à l'air de le faire, à vérifier en laissant tourner.
+ok/ s'occuper du flick du perso dans le scroll. Voir en coupant la virgule dans le calcul ? / vérif : voir quand le scroll bouge et quand il ne bouge pas.
+ok/ mst15 : quand recule, le joueur ne peut pas se dégager (collé).
+ok/ mst15 : sans item, mort, quand on revient, revit. > normal, pour sprite "cassé" => Mettre une item quand même pour l'explosion et revenir cassé.
+ok/ mst15 : jeter aussi des gun/grenade
+ok /*
+changer le ctypes.h :
+//#include <stdint.h>		< doit être inclus avec la SDL.
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+
+typedef int8_t s8;
+typedef int16_t s16;
+typedef int32_t s32;
+
+if (sizeof(ui32) != 4)
+{
+	fprintf(stderr, "Wrong variable size!\n"); exit(1);
+}
+*/
+ok/ mode 2x et TV 2x.
+ok/ 2x: faire F10.
+ok + debug ! il fallait locker les surfaces ! / fullscreen, mettre 640x480, centrer à la main, apparement il y a un bug...
+ok/ >
+faire F9 => x1 / x2 / TV2x
+TV2x : faire une table de 128 K:
+for (i = 0; i < 65536; i++)
+{
+	SDL_GetRGB(i, &r, &g, &b);
+	...calculs pour baisser l'intensité... (x200, /256)
+	pTV2x[i] = SDL_SetRGB(r, g, b);
+}
+<
+ok/ recalage explosion canon front + dusts débris.
+non, ne touche pas le joueur, mais atteint la pf. et si slug tank, touche même en haut/ boss1 : canon front : tir en haut trop haut ?
+ok/ boss 1 : e_Shot_Enemy_Boss1_BulletFront,
+ok/ boss1 : canon front : ne pas tirer quand héros mort.
+ok - sprite rallongé de 1 pix, bien mieux/ boss1 : gfx, monter la plateforme à gauche de 1 pixel (les pieds des rebel soldiers dépassent de 1 pixel, ça se voit quand boss en palette "touché").
+ok/ High score : Si fichier vide et score == 0, on fait n°1 !
+ok/ ou alors tirer en dessous si heros vehicle == space death ? / hmm, tst ok, mais si tir en cours, ça passe quand même au dessus car le tir prend la direction au moment de partir.
+ok/ lev 11 : soucoupes : mort héros => tir au dessus (à cause du décalage du perso en 'no exit'). Peut-être que ne pas tirer si le héros est mort règlera le pb ?
+ok/ Mst 23 (falling rocks) : todo : hit joueur et monstres pendant la chute.
+ok/ hummm... Je crois qu'il va falloir un sprite plus petit qui sera caché derrière le rocher qui tombe. Pour éviter tout système pourri de flag pour empêcher l'affichage, et de calcul pourri pour anticiper une frame de gravité.
+ok/ bored : gfx : faire des anims en plus pour les autres armes ?
+ok/ accroupi : "à coup" tir/marche, à cause du passage en idle sur une frame, faire une anim de transition ? => pas si simple, on passe en pause quand l'anim du haut est terminée, et tq l'anim du haut est != -1 on bloque (je crois)...
+>>> ok/ anims "bored"
+ou carrément :
+	case e_AnmKey_Hero_IdleAnim:
+		*pnTop = *pnLegs;
+		*pnLegs = e_Spr_HeroLegs_Stance;	// Jambes fixes ! L'anim ne sert qu'à indexer l'anim de haut.
+		break;
+=> 1 seule clef, et pas de table. L'anim donne l'image de top.
+Oui, ça semble fonctionner pas trop mal, et c'est pas trop lourd.
+faire le rnd au bout de x frames.
+Si sur plusieurs armes, faire un tableau, si NULL, rien.
+> ça marcherait pour la nage : 1 parce que je ne vais pas le faire pour la nage (^_^), 2 parce que l'anim de nage est complète (jambes + corps) pour ce cas.
+ok/ - définir la clef.
+- faire les gfx. => ok pour gun, voir si on en fait d'autres pour les autres armes.
+ok/ voir l'init de gShoot.nBoredCnt = 0; à placer.
+<<<
+> non, en fait on laisse comme ça, c'est très bien. Même avec l'anticipation, c'est naze en fait.
+petit bug, si on tombe d'une pf et qu'on appuie sur saut pendant la chute, on saute au moment ou on touche le sol.
+- faire un cas général, car avec le slug, si bas en même temps, on sort quand on touche le sol.
+- idem quand on saute du parachute, si saut + saut pendant la chute, saute quand touche le sol.
+- tst : Pas bon, car parfois le joueur anticipe le saut avant d'atterir et là, ça le bloque.
+<
+ok/ mst 7 : ne pas tirer si héros mort.
+ok en fait/ caisse d'armement : reload arme en cours.
+ok >
+Bug : lev8 : on peut remonter sur le 1er wagon ??? (vu avec scroll bloqué (déplacement slt vers la droite)).
+> il faut que 6/8 pixels du wagon restent, je pense que c'est une histoire de recalage avec le bord de l'écran.
+oui, le pb est là, à cause du recalage : void PlayerMove_LimitX(s32 nOffsetX)
++Gen_SideCheck, retirer les sprdisplay quand bug corrigé.
+Si on ne recale pas, ok. => voir si on met un test en plus sans la vitesse ??? (normalement, ce cas n'arrivera pas).
+<
+ok/ zombies : tester 1 bloc plus loin dans le sens du déplacement, car tourne dans le vide/plein.
+ok/ zombies : bouts qui volent.
+ok/ zombies : voir si mars people ok, si on peut récupérer les fct pour gauche droite.
+ok/ zombies : zone out non testée.
+ok/ mars people : faire un gauche-droite. Voir si on peut réutiliser les routines des soldats ? => mst 7
+ok/ mst 7 : table pour distance de tir.
+ok/ mst 7 : table pour vitesse de déplacement.
+ok, tir puis pause tout le temps/ mst 7 : faire une pause après le tir. > pas mal, mais voir pour RAZ compteur si cond x ou y fausse, pour éviter : je suis en dessous, je saute, je resaute, le monstre s'arrête un petit moment sans tirer. >hmmm... Si on RAZ le compteur pour un saut, quand on retombe le mst tire immédiatement....
+ok/ mst 7 : voir décompte, changement de phase pas bon. (ça marche quand même, mais c'est pas bien).
+ok/ mst 7 : mars people : 2/3 pts de vie ?
+ok, mst 33 gère ça/ lev11 : fin de niveau. (largage par le mst 33 pour le placer au bon endroit, ou mst particulier ?).
+ok, changé récement/ héros : slug in/out : pas besoin du && vehicletype dans Gen_SideCheck ?
+non/ sub : voir si on fait monter les dusts de la roquette avec un dustmvt ? (chiant, il faudrait de nouveaux prms dans la table...)
+ok/ SandBagsHeaps, non vraiment testable sans avoir fini le mst14. => un peu haut peut-être ? Les tirs ne passent pas au dessus.
+ok/ tara : mode 1 : tir quand en face du joueur. (pour la séquence, faire 3 fois l'anim de tir dans l'anim ! => 3 tirs d'affilée !).
+ok (sauf dégagement)/ tara : mode 1 : déplacement vers le joueur > ok, mais stopper quand joueur dépassé (faire dégager ?).
+ok/ flying tara : faire plusieurs modes : 1 qui suit un chemin (ok), 1 qui vient vers le joueur, voire 1 pour les niveaux normaux.
+ok/ flying tara : lacher de bombe pour les niveaux normaux.
+ok/ flying tara : lev norm : init pas bonne, il ne faut pas décaler le mst, on peu le faire sortir avec le scroll en tournant la tête. => c'est la sortie qui pose problème plutôt.
+ok/ flying tara : lev norm : celui qui vient de la gauche.
+ok/ rocket diver, faire disparaitre le tir au bout d'un moment. (parce que c'est naze de voir sortir des "vieux" tirs de nulle part).
+ok, limite à +- 64 degrés/ rocket diver, tir, pas de demi tour.
+ok/ half boss méduse à finir.
+bof, Juste un call (il ne faut juste pas trop changer les paramètres)/ une fct pour générer la weapon capsule, avec (itm, x, y, location).
+ok, sauf déplacement en plus/ Présent, faire venir le char de la droite, le logo de la gauche et le menu d'en bas ? (Puis de temps en temps le faire aller vers la gauche et revenir (et accélérer/ralentir le timing entre les images ?)).
+ok/ mst 14 : LRAC > ok, juste revoir la visée, pas top quand verticale (mais décalage testé et ça n'a pas fonctionné).
+ok/ tir : e_Shot_Enemy_RebSoldier_LRAC_Rocket0,
+ok/ demi-boss sous-marin : contact héros > méduses.
+ok/ demi-boss sous-marin : Grosse méduse avec plein de petites qui tournent autour. Attaque en se déplaçant vers le joueur.
+ok/ demi-boss sous-marin : Pas de touché pendant l'arrivée.
+ok/ demi-boss sous-marin : Une fois le premier cercle de petites méduses détruit, en faire apparaitre un second, puis un troisième. Après, on peut tuer le boss.
+ok/ demi-boss sous-marin : fixe, écarter le cercle, le faire revenir, déplacement jusqu'à la pos du héros (qui foit bouger). Rebelote.
+ok/ demi-boss sous-marin : Ne plus bouger quand héros mort.
+ok/ underwater : Bug quand on meurt en haut de l'écran !
+ok/ mst : rebel soldier basique = gun/grenade ?
+ok mix/ mst 14 : nouveau avec pistolet
+ok mix/ mst 14 : nouveau avec grenade
+ok/ tir : e_Shot_Enemy_RebSoldier_Handgrenade0,
+ok/ canon du slug, haut > bas, prendre la direction de l'avant par défaut.
+ok/ flying tara : sequences
+ok/ flying tara : lacher de bonus
+ok/ flying tara : finir la planche gfx ! Mettre les "dusts" qui vont bien. + code.
+non/ Il faudra p'têt un flag au niveau des hard sprites pour tester ou non les tirs : Les caisses d'armement doivent être cassables en tirant dessus. => Bof, ça va géner les ennemis, faire plutôt qu'on passe devant.
+ok/ Hi score : faire les 3 versions de l'affichage !
+ok, gfx exprès/ splash avec le tank (1 sur chaque côté) + sauts, gros plouf. > faire un gfx de plouf exprès ?
+ok/ petit bug : splash : mort, continue. Pas de sprite de héros, mais splash quand même.
+ok/ tank : plouf quand on monte dedans. => parce que lastgnd doit valoir 0. Voir si on force à 1 dans le vehicle change.
+ok/ shobu : supprimer les tirs ennemis quand mort ?
+ok, flag anm_init => pas de sfx/ !!! BUG !!! Décaler le SFX du tir du héros, car deux balles partent ! (img 1 frame, sfx, même img 3 frames => flag nouvelle image => re-tir).
+ok/ Menu gen, timer.
+non à cause du reset de ce compteur par les events/ game over : on peut utiliser le compteur général.
+ok/ Menu get name, nCligno a remplacer par gnFrame.
+ok/ Hi score : saisie du nom : symboles ?
+ok, mais si timer à 0, nom en cours (après tests, je préfère) / Hi score : saisie du nom : mettre un timer, à 0, John Doe. RAZ du timer quand clavier touché.
+ok/ Hi score : affichage : timer sur la page.
+ok/ Hi score : affichage : Clignotement du score qu'on vient de faire.
+ok/ mst 15 + 14 : lev1 : décaler un peu la zone des m14 qui sautent pour les empêcher de reculer (4 ou 5 pixels).
+ok/ mst14 mortar : tester l'arrêt derrière les obstacles un peu plus loin (comme rifle).
+ok/ mst14 rifle : virer aussi le flag de sens pour la cachette ? => non parce sinon il va se cacher... (je crois).
+ok/ mst14 rifle : Ne monte pas les pentes à 45, se cache.
+ok, pas slt les générés. 1 test en plus dans mst14move/ boss1 : mst14 généré, comportement bizarre : Ils sautent, puis courent vers la droite jusqu'en butée avant de revenir pour se mettre en position.
+ok/ mst14 : faire un paramètre de décalage de l'origine, ça à l'air ok avec le camion.
+ok, prm de décalage de la zone/ mst14 : il va sûrement falloir une variable ou un truc pour dire de ne pas dépasser un certain point (la casa du boss1, le camion...).
+ok/ mst14 : cas de l'éjection du camion. Faire une variable pour les cas spéciaux ?
+ok/ boss1 : rajouter un bloc de dur sous le petit escalier pour que les monstres ne sautent pas en remontant ?
+ok/ Girida-0 : tire alors qu'il est en dehors de l'écran. C'est mal. (camion lev 1).
+ok (bug à cause du déplacement du monstre)/ mst 15 : dépasser le camion, revenir, il n'est plus forcément là la première fois.
+ok/ truck (mst15) : Ejecter les soldats (mst 14).
+ok/ truck (mst15) : gestion de la sortie d'écran.
+ok, affichage décalé/ mst15 : bug dans le clignotement du touché, une frame de différence (normal, cache etc affiché avant le hit).
+ok/ truck (mst15) : faire l'arrivée + le déploiement de la planche.
+ok/ mst15 : prio des soldats quand ils meurent devant, passent derrière.
+ok/ voir prio du monstre hard objects avec dust de mort ennemis. Sûrement à mettre comme pour mst15 : e_Prio_DustUnder - 1.
+ok, OR avec nNoMoreCtc dans firehitcheck, car avec = : truck teste en premier et met la var à 1, et un soldat teste ensuite et le met à 0. /mst 15 : bug : quand un soldat se prend une grenade juste devant, le camion prend plusieurs fois d'affilée les dégats (1 fois par frame).
+ok/ Slug Hélico : poser au point central aussi. (pour poser sur le camion en ruine par exemple).
+ok/ truck : prio avec slug posé dessus, pb.
+ok/ Slug Hélico : lev 2 : Mettre un missile plutôt qu'une bombe (prendre celui du L11).
+ok/ mst14 : quand un soldat saute, ralentir sa vitesse x. (voir sur boss1).
+ok/ transit underwater > base, si sub dans le niveau précédent, afficher le slug. (gfx à faire, mais après le code !).
+ok/ e_Mst44_SlugWaitTransit0,
+ok +sub aussi/ mst 4 : air, faire une petite oscillation.
+ok/ mst 34 : adapter au lev 2.
+ok/ mst 34 : screenout nous jette en x. > A cause du décalage ! Lev 11 : x ok, y recalé. Lev2, avec le x original, le décalage place le mst en dehors de la zone.
+ok (le compteur de windows n'est pas stable, mais ça ne fait pas que grossir + trouvé petit m leak sur PSD)/ Petit memory leak quand on lance le jeu sans arrêt...
+ok/ Game Over : Glitch sur la première image.
+ok/ HiSc: Revoir le getname pour le high score, tjs avec fade.
+ok/ Slug Hélico : faire un deuxième véhicule (HelicopterNoExit) pour empêcher la sortie ?
+ok/ Slug Hélico : Il va certainement falloir une bidouille comme le "naked espace" pour ne pas afficher le joueur quand l'hélico explose et pour redémarrer le slug.
+ok, tous levs/ Slug Hélico : lev 2 : Limite bas de map.
+ok/ Slug Hélico : voir si on passe par un target inclinaison ? (spd = 0 en bord de map => se remet droit tout de suite).
+ok/ Slug Hélico : touche le sol, raz inclinaison Y.
+ok, mais pos normale car recalage scroll violent => voir si des niveaux nécessitent un ajustement/ Slug Hélico : mettre en permanence le last y vers le milieu de l'écran.
+ok/ Slug Hélico : tous levs : revient plus doucement en pos initiale quand H ou G qu'avec B et D.
+non, maintenant il y a un n° de mission/ Pour n° de mission dans les high scores, on peut faire un compteur. Part à 1. Puis à chaque fois qu'on doit afficher "mission", +1.
+no pb/ prio flèche "in" ? (quoique, c'est bien de la laisser devant, si un monstre est devant le slug, on voit quand même la flèche).
+ok/ différents types de Scroll
+non (spr en rotozoom en 8 bits)/ sprites : voir après les palettes si on peut 'packer' les sprites qui tiennent sur 16 couleurs en 4 bits + 4 bits par octet. => seulement si nécessaire (et encore, pas pratique du tout pour les sprites en zoom/rotation).
+vieux, fait depuis/ fin lvl => soit on passe en phase transitoff, soit en phase mission complete qui enchainera sur transitoff après.
+vieux, fait depuis/ fin lvl => peut être pas de phase, juste un compteur.
+vieux, fait depuis/ fin lvl : Un boss donne l'item 254 => affichage de fin de mission. Quand affichage terminé, itm 255. + un define pour chaque dans game.h ou monsters.h
+vieux, fait depuis/ héros : //todo: traces de pas : dans playerGnd, il y a la surface !
+vieux, fait depuis/ héros : //todo: GFX: anims de traces de pas.
+vieux, fait depuis/ héros : Les dust d'atterrissage ici ? A cause du double point, pas dans GroundCheck()
+non, impossible/ Voir pour mettre GroundCheck avec en prm une structure pour que ça serve aussi aux monstres. (? => probablement non, fonction bien modifiée depuis).
+non, annulé/ Penser à un truc pour les noms des prisonniers.
+ok, mais non, explo avec mst17/ mst42: + explosions ?
+ok, général/ Il faudra sûrement un compteur de nombre de type de monstres (boss 1 qui balance des soldats par exemple). Voir si on fait un truc local ou général (utile au moins pour rebel soldier + girida).
+ok/ girida-0 : test de sortie de l'écran.
+ok/ girida-0 : revoir rotation sur echelle.
+ok - reglé avec le prm splashlevel/ rocket diver : touché en train de tirer, l'anim de tir continue. + roquette qui atteri sur du dur mais anim de splash.
+ok/ niveau du splatch de l'eau, lev 13 + 15.
+ok/ Mst 42 : Porte à détruire.
+ok (fix mvt buggé)/ Bug Mst 21 : en le faisant sortir par la gauche, on reste sur les limites de droite.
+ok/ boss 1 : canon up : destruction.
+ok (bloc col de 8 pixels)/ boss 1 : attention, soldats peuvent dépasser l'avion. bloqués avec un bloc, mais voir si ça ne gènera pas les tirs. => gène les tirs du joueur.
+ok/ girida-0 : limiter le déplacement vers l'avant à une zone.
+ok/ Finir init + patch scroll niveau 8.
+ok/ truck : voir comment bloquer le héros devant. => ok.
+ok (il y a longtemps)/ Mst pour changer l'excentrage du scroll (voir vidéo, pour forcer le scroll à descendre et le garder bloqué). = mst : 1 mst pour changer l'excentrage y ? (niveau du train dans la video).
+ok/ boss/demi-boss : supprimer les tirs quand ennemi tué. (ou pas ?)
+ok/ Affichage du 'mission complete' (arrive après le nombre de prisonniers).
+ok/ Faire le bonus score pour le nombre de prisonniers libérés.
+ok/ Gfx : Mettre un point dans le cannon up du boss 1 toutes les x frames. => Mettre un flag dans l'anim ? ce sera sûrement plus simple.
+ok/ boss 1 (et autres) : Suppression des tirs quand mort (index du tir, -1 pour tous (ou Bit31 + org plyr ou enemy)).
+ok/ boss 1 : cannon up : laisser un trou entre les bombes, position aléatoire ?
+ok/ boss 1 : canon, tirs. Voir si on peut faire tirer une roquette depuis le cercle devant, et faire retomber plein de petites bombes avec un parachute. => oui, sprites prêts.
+ok/ boss 1 : faire des monstres explosions pour les états de decay.
+ok/ lev13 : prio du boss 1.
+ok/ pow : boss 1 : prévoir qu'on puisse les faire tomber quand les pf disparaissent...
+ok/ tank : sprite de col debout/crouch.
+ok/ tank : anim crouch/debout.
+ok (temp ?)/ Présent, faire un fond, soit avec image fixe, soit avec un logo MS qui cycle.
+ok/ L11 - soucoupes UFO (petites)
+ok/ L11 - space trash (en décor)
+ok (2 versions)/ POW : voir pour ne remettre le nombre à 0 qu'à la perte de credit ? (et pas de vie) > Apparement c'est à chaque vie dans MS.
+non/ mst 34 : vie en fonction de l'arme ? 2 si gun / 4 autrement. => Hmmm, pas terrible comme idée.
+ok - 1 par 1 et tous ensemble/ mst 34 : tir. (leader seulement ?). => faire le coup de la séquence.
+ok/ mst 34 : accélération avec >>.
+ok/ Bug : Aïe, submarine, on passe sous la map ! (naked et je suppose en slug). Voir au niveau du demi-boss. Le plus simple serait de faire un sol de 8 pixels transparent à cet endroit. Ou pas, parce que ça va bloquer les tirs.
+ok/ MST04 (weapon): Caisse, si état à changé, faire un dead si quitte l'écran.
+ok/ gfx : Finir les 4 frames du shotgun sous marin. Changer dans Player_GetTopBottom/gpHeroTopImg[] / PlayerDisplay_Swim/gpHeroTopShotImg & gpHeroTopShotMultiplier
+ok/ Mitrailleuse sous marine, changer l'anim. //tst ok : 			{ gAnm_Hero_Shot_Gun, gAnm_Hero_Shot_Shotgun, gAnm_Hero_Shot_Flamethrower, gAnm_Hero_Shot_Flamethrower, gAnm_Hero_Shot_Shotgun };
+ok/ si tb exprès (aussi à faire dans topanmadvance), faire anim exprès sub_machinegun, comme ça on sera tranquille.
+ok, phase org ! bordel !/ M14 : vu dans niveau du train, rebel shotgun, quand il est caché et accroupi, quand on est devant (accroupi) très près mais pas tout à fait à portée de coup de crosse, il descend monte descend...
+ok/ Puisqu'on a le fusil sous-marin, il va faloir les items sous-marins ! (sans gravité)
+ok/ Sensor Mine : Se dirige vers le joueur quand il est a proximité (prendre le centre du rect de col pour cible) et explose au contact.
+ok, ping pong/ A intégrer : sensormine0.psd. Il manque 1 frame, essayer 0>7,2 et 0>7,3,2.
+ok/ mission complete, ne pas retirer et fermer dessus ?
+ok/ spr : sous marin : le fusil.
+ok/ fusil sub.
+ok/ Faire les deux transitions : une pour les débuts/fins de missions, une pour les chgts dans la même mission.
+ok/ slug rocket : grosse trainée au décollage (faire ça avec autopilot ! et couper aussi les thrusters et le trail dust avec).
+ok/ L11 - armes sur la fusée, + tirs, + bombes, + explosion avec les armes.
+ok/ L11 - petits astéroides qui vont vite
+ok/ L11 - gros astéroides à couper en deux
+ok => test d'un sprite unique à cause des resctangles de col qui bougent/ Héros : bug : sur le dernier pixel des pf mobiles, tombe, raccroche, tombe...
+ok, sans chaser/ slug rocket : B, lancer au pire un missile à tête chercheuse. => créer un tir.
+ok/ gfx à faire : explosion de la boulette verte.
+ok/ tir à faire : e_Shot_Enemy_MarsUFO_Bullet0,
+ok/ tir fusée : gpHeroShotClearKb à mettre en général (commun avec le tir du joueur).
+ok/ mst37, séparation, intercepte toujours les tirs ???
+ok, en dur/ mst37 : offset pour libérer le scroll plus tôt ? Ou le faire en dur ? (au moment ou l'ast touche le bas de l'écran par exemple).
+ok/ mst37 - heros : pb: explosion rocket, SOUS l'astéroide.
+ok/ mst37 : Sortie de l'écran ! (+séquence)
+ok => si centre box joueur dans l'astéroïde, mort/ mst37 : recalage pose des problèmes pour la réapparition... en cours, ça ne serait pas mal comme ça. Tant pis pour le saut après l'invulnérabilité si le joueur n'a pas bougé.
+ok/ slugs : autopilot => invulnérable.
+ok/ Héros : Repasse en gun quand plus de balles / au début de Player_TopAnmAdvance().
+ok/ Bug : Après la mitrailleuse (ou les armes à répétition), un tir de flingue part. (Pas vraiment un bug, c'est juste un tir car kb pas clearé). => tester la répétition justement !
+ok/ rocket : clignotement d'invulnérabilité
+ok/ L11 - bonus H + contacts
+ok/ rocket : rentrée des canons, bug.
+ok, mais il ne faut pas perdre de vie !!! (normal) / Rocket : Repasse en gun, laisser l'arme au joueur.
+ok/ Rocket : voir si on laisse ou pas (plutôt non je pense) : quand on se fait exploser les 2 canons, on reste en H.
+ok/ mst 33 : scroll stop. => non / repart après génération / repart après disparition du dernier monstre.
+ok/ général : 2 directions à la fois => le move doit faire les deux, à corriger.
+ok/ général : 2 directions à la fois, anim : swim / sub ? / hélico ?
+ok mais différent, si rocket, tests en plus / 1 playerhitSpace = test des collisions avec les armes des côtés, puis appelle le playerhitspace.
+ok/ scroll lev11 : ne plus faire avancer le scroll si player flag death.
+ok => offset en s16 règle le pb (et c'est normal)/ slug rocket : pb = recalage au niveau du sol...
+non (passage par hero_inspace)/rocket : probablement au debut du ctrl : gShoot.nDeathFlag = 0; (c'est un cas spécial...)
+ok/ rocket : mort, décalage (in slug).
+ok/ L11 - petites pierres avec angle qui change (utiliser les chemins).
+non en fait, inutile/ slugs : Eviter l'auto pilot si mst généré ? (voir si ça sert, auto pilot avec usage très limité).
+ok/ voir pour enlever le flick en haut avec sous marin + hélico.
+non, essai de cas général dans le sous-marin et en fait, pas terrible. Le moment ou le joueur n'est pas affiché fait comme une transition / //todo: peut-être à descendre dans la phase suivante pour cas général.
+non / slug sub : voir si on peut afficher le joueur dans le sub pendant l'anim d'ouverture/fermeture comme pour la fusée ?
+>
+	// Perso dans le sous-marin.
+	if (AnmCheckEnd(gShoot.nPlayerAnimInOut))
+	{
+		SprDisplay(e_Spr_Hero_InSlug_Sub + 15, gShoot.nPlayerPosX >> 8, gShoot.nPlayerPosY >> 8, e_Prio_Joueur);
+	}
+<
+ok/ 33 34 - mst série avec chemin + larguage de bonus (H et essence).
+ok/ mst 34 : faire le flip x.
+ok/ mst 34 : init du gfx qui va bien.
+ok/ mst 34 : screen out !
+ok/ 1 playersetweaponspace = pour armes de la fusée dans le L11
+non/ slug rocket : sortie de la map au décollage. => pb avec mst13 => non, mais il faut un next level == -1 pour enchaîner !!!
+non => inutile, recherche avec une dichotomie, donc ça sortira tout de suite/ auto pilot : si sortie de map possible, ne plus tester les blocs !
+ok/ dans gScrollPos : s32 gScrollPos_nL11SpdY;
+ok + table / faire un union avec nL8PosX, RAZ à chaque init. => Non, car pos X = 0 et SpdY = x. => ou faire une table ?
+>
+union
+{
+	s32 nSpecialVar;		// Pour init.
+	s32 nL11SpdY;
+	s32 nL8PosX;
+} gScrollPos2;	// Passer dans gScrollPos + supprimer le nom.
+<
+ok / > Derniers essais : la version sans màj du gScrollPos.nPosY est mieux et plus simple.
+ok/ slug rocket : mst 9 : ne pas afficher le vulcan.
+ok/ pour les leaders, on peut placer une table avec les séquences ! (Une case de 16 ou 32 bits par exemple). + fct pour retirer le bit.
+non/ rocket (slugs ?) => voir si auto pilote, pour ne pas s'arrêter et continuer vers le haut. Est-ce bien utile ? => avec vitesse max x2, ça fait illusion : le temps qu'on ait ralenti jusqu'à l'arrêt, la transition est finie.
+ok/ transit, voir si on peut faire une transition comme les dents, mais en vertical. > ok, à intégrer.
+ok/ // tank + rocket : passer en général : static	u32	gpSlugInBaseImg[e_Player_Weapon_Max] = { e_Spr_Hero_SlugIn_Gun, e_Spr_Hero_SlugIn_Shotgun, e_Spr_Hero_SlugIn_Machinegun, e_Spr_Hero_SlugIn_Shotgun, e_Spr_Hero_SlugIn_Shotgun };
+ok/ slugs : faire un auto pilot. Si direction au dessus du bloc (et mst non généré), auto pilot. Jusqu'à un X.
+ok/ Sprites : petit bug à droite, quand spr de 1 colonne, ne s'affiche pas ? (fin du lvl 13).
+ok/ bug : spr : haut et bas, affiche 2 pixels min.
+ok/ mst14 : comme init, regrouper les phases principales dans le mst de base. Puis faire les cas particuliers dans chaque mst.
+ok/ mst 14 rifle : dy sur tir quand caché.
+ok => 1 bit : Oui - Rnd - Non / mst 14 : bit pour sauteurs. faire le système des chemins pour indiquer si on peut sauter ou pas ? => non.
+ok/ mst 14 : prévoir qu'on puisse les faire tomber si une pf disparait (boss1). => faire un if nGround==0 et phase != fall => anmset fall + phase fall. à la fin (sol), repasse en wait. ET phase > e_Mst14_Parachuting.
+ok/ faire aussi la gravité pour les weapon capsules.
+ok, pas un bug, c'est à cause bug du décalage du monstre 27 dans l'init pour test/ shobu, quand on arrive de la gauche, n'apparait pas. Voir monstre 27.
+ok/ scroll : lev8 : static s32 nPosX = 0;	// Position du background. < Passer en variable gen à remettre à 0 tout le temps !
+ok/ ScrollManage : quand on aura le nb total de niveaux, faire des pointeurs de fonction pour les différents cas (ou seulement les cas spéciaux ?). == scroll : faire un ptr de fonction pour une gestion en fct du niveau (train...).
+ok/ Debris qui tombent (boss1, r-shobu, etc...). Les faire descendre, disparaissent quand touchent le sol.
+ok/ bug : déclenchement du coup de couteau sur ennemis cachés ! (+ probablement attire les roquettes).
+ok, sans hard sprite/ mst : caisse d'armement. (hard spr (ou pas ? en hard spr, ça va gêner les ennemis...)).
+ok/ rifle : un coup de crosse quand joueur à portée. > pas mal, touche bien, empêcher de frapper sans arrêt (peut-être ne pas frapper que joueur invulnérable ?).
+ok/ mst 14 : rifle : parachute : rajouter un flingue derrière le sprite du soldat ?
+ok/ mst 14 : rifle : faire une zone en hauteur pour le tir. -1 pour le mortar.
+ok/ boss 1 : pas de hit avant d'avoir "attrapé" le joueur et bâche partie.
+ok/ mst 14 : parachute à finir + externaliser pour tous.
+ok => comme pour shotgun. Je n'ai pas les sprites de toutes façons/ mst 14 : death en l'air.
+ok/ rifle : on devrait pouvoir mettre le même comportement de base que le mortar. Voir pour mettre ça en commun.
+ok/ rifle : le faire reprendre le cycle normal après être entré dans le cycle "cachette".
+ok/ mst 14 : empêcher le tir si hors de l'écran.
+ok/ mst 14 : mettre les inits en commun et garder une init spécifique pour les cas particuliers.
+ok/ mst14 : parachute : offset = décalage dans l'écran ?
+non/ mst 14 : si on veut faire un dust de parachute en l'air, on peut tester l'anim avec une clef => non c'est con, avec le ground c'est mieux.
+ok, dans le déplacement, mais mortar dépasse quand même. Difficile car on ne peut pas regarder + loin qu'un bloc.../ voir pour le basic move, peut-on regarder un bloc plus loin. (mortar dépassent des pf).
+ok/ mortar : screenout à revoir avec une zone.
+ok/ mortar : zone générale pour empècher les déplacements trop loin.
+ok/ boss : explosions seraient ok, mais passent en dessous du boss...
+ok/ gfx : rifle soldier : voir si j'ai une image avant celle du tir (si non, la rajouter). + Ralonger le timing sur cette image pour que ce soit plus facile.
+ok/ Mort héros, lâcher l'arme en cours.
+ok : Enemy_PlayerBlowRect + Player_Damage/ Il va falloir un PlayerHit(u32 nDamagePts, u32 nDamageType) (pour mort par feu...).
+non/ slug : clignotement rouge quand plus d'énergie ?
+non, tirs pas destructibles, et voilà (voir vidéo MS1) / shobu, décaler un peu les tirs, sinon on peut tirer vers le haut et ne jamais être touché. (décaler la cible ?) => ou alors, décaler l'hélico quand il se fait toucher ? => quand il revient, il tirera à côté. => attention, il pourrait passer son temps à fuir...
+ok/ Hero blocker : mettre la vitesse en X du joueur à 0 (évitera l'effet "colle" si on veut repartir dans l'autre sens). => Mst + fonction seule appelée depuis certains monstres (voir truck n°15).
+ok/ Clignotement des slugs quand touché, comme pour les monstres qui ont de la vie.
+ok/ Arrêter les tirs sur les plafonds.
+ok/ Tirs : vers le haut, tir slug disparait trop tôt ??? => Sortie de map je pense...
+ok/ boss 1 : faire des plateformes invisibles en blocs.
+ok/ boss 1 : prévoir de pouvoir supprimer la pf de gauche avec une copie de blocs OU juste clearer les codes de collisions ? <= Oui.
+ok/ lev 8 : spr : lock, allonger la zone de col vers l'arrière, c'est le plus simple. (Et peut-être enlever le code de col sur le bloc de porte).
+ok/ squid : en faire venir plein de la gauche, sans arrêt sur une zone, à hauteur différentes.
+ok/ tirs : roquette sous marin : angles (seulement au lancer ? => Il n'y a pas les angles nécessaires au homing). => les mettre en rotation + homing.
+ok/ EdTile : Suppression du dernier plan alors que c'est le plan en cours => crash.
+ok/ grab des blocs 3 pour lev7
+ok/ reste à faire le test de déplacement latéral avec le plafond : swim + slug sub.
+non > bloc 3/ Il va falloir un HeadCheck pour le sous-marin. > retoucher la routine ?
+non > bloc 3/ + Attention à la sortie du sub, => crash.
+bof... non, car inutile/ parachute : voir si on met un léger contrôle droite/gauche.
+ok/ Mettre en commun la struct pour le rebel soldier, pour cast de l'un à l'autre (un qui grimpe devient un soldat de base une fois arrivé, etc...).
+ok/ masknell : gestion de la prio, le premier au dessus.
+non/ supprimer l'anim gAnm_Masknell_Blades ? (quoique, le compte tombe très mal...).
+ok/ masknell : trouver le leader. / 1 octet (gnMasknell), 1 bit par helico. Quand mort, clearer le bit. Chaque monstre (avec son n° dans la seq) peut scanner pour le leader.
+ok/ Pour "taper" sur le joueur, faire un Enemy_PlayerBlowRect(rect ou n° de sprite, damage). La fonction appelera PlayerDamage().
+non/ tirs : grenade : rebond (?).
+ok/ slug sub : mettre la roquette en rotation.
+ok/ Tirs : Dust trail derrière les tirs en rotation.
+ok/ weapon capsules : init : si dans du dur, remonter. sinon ne rien faire.
+ok/ En cours : voir gShoot.nAmmo, si on ne ferait pas plutôt un nVehicleAmmo plutôt que de sauver.
+ok/ En cours : armes : reload player quand dans un slug.
+ok/ Plyr : Il faudra un flag invulnérable pour le joueur (mission complete, qques frames en début de vie...). Faire un octet qui se décrémente si pas 0. => si anm==victory forcer une valeur à chaque frame (une qui aille bien pour ne pas que ça clignote). / Idem si j'ai le temps de découper les sprites de résurrection en début de crédit.
+ok/ parachute : control : après Player_VehicleSet appeler la routine de contrôle à pied !
+ok/ gfx : Rallonger la zone de col de l'explosion vers le bas, pour compenser la hauteur du missile.
+ok/ + retirer tous les dégats sur les tirs qui explosent, car ça fait double touchette (1 le tir, 1 l'explosion).
+ok/ gfx : héros, anim de victoire pour "mission complete".
+ok/ victoire : faire un player_managevictory, appel dans tous => couper le contrôle + invulnérabilité.
+ok/ > + dans naked => anm quand joueur au sol.
+ok/ > + dans tank => sortie de slug, naked forcera l'anim une fois au sol.
+non/ tester la victoire : gpMstQuestItems[MST_QUEST_ITEM_NEXT_LEVEL] = 1;	// Item de quête. | => non, ça sert aussi à passer de sub level en sub level. | => Après réflexion, et même si ça paraît bizarre, on peut tester : gGameVar.nPhase = e_Game_MissionEnd;
+ok/ Ou sinon on peut mettre gpMstQuestItems[MST_QUEST_ITEM_NEXT_LEVEL] à 2 au moment ou on passe la phase à MissionEnd. C'est plus propre.
+ok/ + si gpMstQuestItems[MST_QUEST_ITEM_NEXT_LEVEL] == 1 => forcer l'invulnérabilité, comme ça on est tranquille...
+ok/ slug : prévoir de faire "tomber" le tank (et l'hélico) si le sol disparaît sous lui. (lev13, pf de gauche).
+ok/ mst 21 : mst qui limite le Y. / un mst qui donne l'excentrage Y du joueur ? (???)
+ok/ Finir les tirs, faire la grenade.
+ok/ grenade : si choc dur pendant la montée, explosion sur place. < Oui | Non > Ou couper la vitesse de montée ? (+ re décalage vers le bas, ou garder la coordonnée précédente).
+ok/ Gfx : Mettre un point dans l'alpha 3 du cannon front du boss 1 pour le tir !
+ok/ héros : mort, changer le sprite de collision. (voir si avec null c'est bon ou pas (roquettes à tête chercheuse ?)). => bombes du shobu qui tombent et explosent dans le vide quand héros mort. => A tester : no_sprite dans display_naked et display_swim.
+ok/ roquettes du rocket diver, si héros meurt, les roquettes tournent en rond... => plus de target si héros mort !
+ok/ faire un flag héros mort, indication pour les monstres, etc...
+ok/ shobu : Arrêter de tirer si héros mort.
+ok/ Gfx : R-Shobu : Rajouter des zones de col sur la bombe (pour pouvoir tirer dessus).
+ok/ girida-0 : Front, qui recule quand on apparaît derrière.
+ok/ tirs : tirs destructibles. (flag + fct).
+ok/ tirs : homing missile. > mettre flag dans les tirs (table).
+non, essais réalisés, mais très chiant pour pas grand chose en fait /girida0 : tir : juste soustraire/ajouter le cos*l'angle à la distance ? (tire trop loin en descente).
+ok/ prio mst slug/girida
+ok => impec/ agrandir la zone de col vers le haut pour la tourelle ?
+ok/ parachute pour le héros. / slot anm parachute dans la struct.
+ok (+ ou -)/ en cours : mst 21 scroll y
+ok/ rocket diver
+ok > en fait décalé sur les pts originaux, ça ne devrait pas géner, l'eau n'est que dans le lev13/ > décalage pour l'éclaboussure de l'eau du lev13, faire un gfx avec pt de ref décalé.
+ok/ tirs : flag affichage rotozoom.
+ok/ lev13 : bug dans la pente avec le tank. => pas de bug, bloc sans col.
+ok/ lev 13 : manque une col au bout des sacs à droite (entre désert et marais).
+non, géré avec une nouvelle fonction/ Si jamais il faut que les hard sprites arrêtent les tirs, gérer ça au niveau du monstre ! (FireHitCheck). => pas si sûr... les colisions sont testées sur des rectangles.
+ok/ scroll : prévoir un scroll sans retour en arrière dans certains niveaux (tous ? il n'y a pas de frames de retournement pour les slugs).
+ok, mais je ne sais pas si j'ai fait comme ça/ tirs : recalage sur le sol : si + profond que la vitesse max => mur. On peut aussi tester le déplacement en x.
+ok/ tirs : grenade : recalage au niveau du sol ? => a faire absolument.
+ok/ Finir la gestion des monstres : disparition (et disparition avec zones).
+ok/ mst : les rembardes des sous-marins => selon l'état de l'item de quête, attend pour tirs ou directement cassée.
+ok/ mst : faire routine de test de sortie de gestion (screen out).
+ok - gravité + mvt/ dust : faire un flag moveup ? (bulles sous marines ?) > plutôt non. / e_DustFlag_MoveUp = 1 << 1, gpDustSlots[i].nPosY -= 0x100;
+ok - gravité + mvt/ dust : faire un flag movedown ? (debris de l'hélico ?)
+ok/ boss 1 : bloquer le joueur avec la fonction qui va bien.
+ok/ recalage des tirs grv au sol, à tester dans la pente de fin du lvl 1.
+ok/ shobu : mettre un dustmvt métal.
+ok/ debris (dust, nouvelle fct).
+ok/ Debris, modif monstre explosion (ou blkbkg2 ?) pour donner des debris.
+ok/ pour le lock X, revoir pour donner des limites ?
+ok/ boss 1 : on peut faire monter le scroll ligne par ligne, une fois le scroll bloqué en x.
+ok/ Faire un "Refuel" pour le slug (pour le jerrican).
+ok/ => dégager les monstres de la gestion avec un rectangle ? Les "interrupteurs" seront dans ce rectangle. ===> Bug dans le rectangle.
+ok/ FireHitCheck : La prio ne doit servir à rien (utile dans un shoot pour les éclats au sol ou en l'air). => quoique, pour mettre le dust du tir au dessus du joueur... (ou alors si tir ennemi => prio plus élevée que le joueur => ça à l'air pas mal ça / Bof => on sait si c'est un tir joueur ou ennemi).
+ok/ Voir si on peut mettre la fonction de contrôle du joueur APRES game(). Si renvoie 1, on skippe tout, y compris le contrôle. > gpFctCtrlTb[gShoot.nVehicleType]();
+ok/ puissance des tirs. => Pas mal comme pour le truck.
+ok/ => Voir si on peut passer un flag pour le noctc, uniquement sur les gros sprites. => les camions, tout ça, font noctc. Les ennemis qui meurent en 1 coup ne le font pas.
+ok/ => Passer les points de vie ? 1 => Pas de noctc, + => no ctc.
+ok/ bug : niveau du désert (et ceux avec un avant plan), "mission start" passe derrière l'avant plan !
+ok/ => Passer les prio des sprites sur 16 bits (déjà en 16 bits dans se stockage, il reste le prm des fonctions à passer en 16 bits
+ok/ => ensuite, si > 0x100, affichage avant l'avant plan.
+ok/ en cours : debug dernière ligne du scroll / voir les conditions dans les scr_sub. / + le -1 est commenté.
+ok/ Corriger le coup du slot dans les monstres, comme pour les tirs. (si échoue, le last used n'est plus bon).
+non/ mst 16 : rajouter plan (pour plan de masquage). => non faire des sprites.
+ok/ truck : transformation en dur quand mort : utiliser le sprite fait pour ça.
+ok, mais slots. La liste màj pose problème pour les sprites qui doivent monter dessus/ + Probablement : faire une liste de sprites durs (mise à jour tq l'ennemi est là). Quand test des blocs, rajouter test sur les sprites. On teste si on est dans le rectangle, si oui, chercher la hauteur sur la colonnne qui va bien.
+ok/ mst : faire qu'un monstre puisse faire PF / dur ? (débris de camion dans MS).
+ok/ Mettre la fct HardSpr_TestIn dans BlockGetGroundLevel(), probablement encapsuler la fct actuelle, et faire le test hard sprites après.
+ok, petite modif / fire : FireAdd, si plus d'anims, il faut changer la position du lastused, car index pris.
+ok/ copter : règler le larguage de la bombe. / peut-être : faire une fct qui renvoie un ptr sur la vitesse dur tir ? => servira sûrement pour le girida0.
+ok/ => passer la vitesse en négatif si le copter recule.
+non> on s'arrête sur le premier pixel vide. Ou alors, faire +1 dans tous les cas / void HardSpr_TestIn(s32 nPosX, s32 nPosY) > voir pour faire un cas quand sortie de boucle sur condition du >=, il doit falloir faire un --.
+ok/ Anim pour le slug copter qui attend.
+ok/ heros : arme : lance roquettes ?
+ok/ tirs : homing missile : faire une petite table, les monstres "visables" mettent à chaque tour leur (x,y) dedans. La liste est clearée par FireManage à chaque tour (enfin, index remis à 0).
+non/ homing : ralonger la zone, faire un carré sur les angles (2/3 de la longueur max).
+ok/ homing : faire tourner le missile petit à petit.
+ok/ pow : ensuite : sprites + pow attaché en l'air (détachement avec un tir).
+ok/ pow : accroché : 53 pix de haut. Anim pendu : ping pong 5 images / dust corde détachement : 7 images.
+ok/ homing : gfx : voir pourquoi le gfx "clignote" vers la gauche (sprite A et B, ombrage opposé ?).
+ok/ modif : Ennemy_GroundLevel : voir si on peut utiliser BlockGetGroundLevel dedans à la place.
+ok/ mst : modifier la routine de move : autoriser à tomber dans les trous / ou renvoyer le truc impossible (mur ou trou).
+ok/ pow : prévoir une fuite.
+ok/ mst : mettre un spdy + 1 ground ?.
+non/ continue : faire disparaitre les lettres en zoomant x, de la gauche vers la droite. / pas sûr. Uniquement pour la transition. Si continue, rien. Le laisser afficher peut-être ?
+ok/ continue : faire apparaitre les lettres en zoomant x, de la gauche vers la droite.
+ok/ Sélecteur (menu) : 1 crédit / 3 crédits / crédits illimités.
+non/ vies : décrémenter les vies à l'init ? > non car foireux pour afficher 0 vies, et il n'y à qu'un -- dans tout le code...
+ok/ héros : quand la tête touche, le héros est arrêté. (Sûrement le pb de la tête pas testée au bon endroit).
+ok/ héros : Saut, tête pas testée au bon endroit (apparement trop bas ? voir avec le sprite de debug).
+ok/ héros : accroupi sous un bloc, saut, passe au travers le bloc.
+ok/ mst : zombie, Empêcher les déplacements si trou ou mur. mur : si next posY ht >= 8 non.  > faire une fonction qu'on pourra utiliser pour tous les monstres. > + la mettre pour le burn.
+ok/ mst : zombie, faire un dy pour le tir.
+ok/ voir si on a les sprites pour faire des tirs vers le bas (uniquement pendant les sauts). => il n'y a pas tout, mais quand même une bonne partie. => Avec marcor.gif, on a tout !
+ok/ Héros : Tirs vers le bas à faire. + les tirs.
+ok/ reb_mortar0 à intégrer.
+ok/ test en cours : Décalage un coup en sens inverse au moment de l'ajout => A l'air pas mal. / heros : décaler le point de départ des tirs. Ou ne pas commencer par un déplacement ? (ou reculer un coup à l'init ?)
+ok/ rifle : réduire la zone de col en ht pour ne pas qu'ils se fassent shooter derrière les obstacles.
+ok/ zombie : décaler le dust de tir au point de départ du tir. (comme rifle soldier).
+ok/ Mst : Faire un monstre pour changer de niveau, contact => donne l'item de quête 255.
+ok/ Levier niveau 8, on l'affiche tout le temps et état initial avec un item de quête (attente/used). => oui.
+ok/ pf mobiles, todo : mettre un X comme direction, si X => spd = 0 : plateformes fixes.
+ok/ zombie : Utiliser Mst_ShotLaunch.
+non => En swim, le perso est centré en y... / spr : slug out sous marin, le mettre à l'identique du normal pour éviter le cas spécial dans la routine Slug_GetOut ? (Ou faire une table ? mais sans utilité cas seulement pour le sous marin).
+non/ tank + naked : angle, si les deux pts ne touchent pas (ou angle trop grand (abs(a)>32)), prendre l'inclinaison sur le bloc qui touche.
+non/ naked : juste avec l'angle du bloc qui touche.
+non/ tank, prévoir quand même de pouvoir tomber en bout de plateforme.
+non/ > voir ce que j'ai fait pour naked. Il faudra calculer plusieurs point intermédiaires, sans dépasser un dépl. x supérieur à la vitesse de chute.
+=> Mais j'ai fait un truc qui fonctionne !
+ok/ LoadLevel : Faire un malloc de la taille du fichier pour buffer.
+ok/ Prévoir un monstre "absorbeur de tirs" invisible ? voir le mst 12
+ok/ Prévoir un monstre qui empèche de passer à la fin du niveau 8, mais qui laisse passer les tirs. => Servira pour la porte niveau 4.
+ok/ Affichage du 'mission x start!'
+ok/ slug tank, décalage de 1 pixel en y : peut être : si n° ordre != -1, on peut faire y+=1 à l'init.
+ok/ spr : recaler le tank, utiliser le niveau 4.
+ok/ Faire un pixeliseur pour le Game Over, peut-être en 8 bits, pour fade in/out facile en même temps (assombrir la palette pendant l'effet, et hop !).
+ok/ voir le glitch de 1 frame (normal) entre les menus.
+ok/ Slug : Quand on commence un niveau en slug, forcer la phase pour ne pas voir l'entrée.
+ok/ passer nLevel dans gGameVar, n'a rien à faire dans gShoot, en fait. + passer en signé.
+ok/ passer nPhase dans gGameVar, n'a rien à faire dans gShoot, en fait.
+ok/ supprimer ExgShootExit(e_Game_AllClear), plus d'intérêt. gGame va être publique, mettre la variable testée dedans.
+ok/ Faire une fonction RotatePoint(ptr sur offsetx, ptr sur offsety, angle), la mettre avec la fct qui récupère l'offset des flèches.
+ok/ Mst slug, décalage du vulcan sur les sprites en rot.
+ok/ slug : passer l'angle.
+ok/ Slugs (mst + héros) : décalage des flèches In/Out.
+ok/ tank : controle du crouch : on passe de crouch à debout et inversement seulement si pas bouton A.
+ok/ heros naked : accroupi, voir si on peut faire le coup du ++ sur le n° d'anim.
+ok/ slug tank : Ne quitter que quand au sol. (Si je suis motivé, on pourra faire un petit parachute si on quitte en l'air => on verra bien plus tard).
+ok/ spr rot : faire tourner seulement 3 points pour le sprite, le pt en haut à gauche étant (0,0). + un 4ème : le point de ref.
+ok/ plus tard : sprites qui zooment.
+ok/ plus tard : sprites qui tournent.
+ok/ spr rot : intégrer dans le moteur.
+ok/ Séparer la routine en 2, une première partie pour calcul de la largeur, une deuxième qui fait la rotation et calcule l'image.
+ok/ rz : optim angle 0
+ok/ rz : optim angle 128 => zoom  + spr ^ flipx ^ flipy
+ok/ enlever le flag rz, faire le test en direct ? -> mettre un ptr de fct. -> transformation en ptr sur fct de rendu
+non, ptr de fct, bien mieux / spr rz : on doit pouvoir flaguer dans les fct SprDisplay..., ce qui éviterait de pusher 0, 0x100, 0x100 pour les sprites normaux
+ok/ spr rz : + on doit pouvoir éviter les tests de rot dans SprGetGfxMskPtr.
+non /spr rot : Flips : Retourner les coordonées de mapping.
+plus la peine / rz : Est-ce qu'en calculant juste la diagonale dans les deux sens, ça ne suffirait pas pour la largeur/hauteur ?
+ok/ ok, avec pointeurs de fonctions et tout et tout. Il faut nettoyer et passer les fonctions dans les .H. + mettre des commentaires pour le pointeur qui fait pré-rendu puis rendu.
+ok/ revoir les appels à BlockGetHeight, le &0x0F est fait dans la fonction.
+ok : système général/ système de munitions, par arme ou général ? mitrailleuse init : 350 balles.
+ok/ Grenades : faire un flip sur l'affichage pour les lancers à gauche. (ou faire tourner dans l'autre sens ?). > le flip n'était pas fait pour les nNoClip.
+ok/ Quand on entre dans le slug avec le bouton de tir sur une anim qui boucle, des tirs partent du Vulcan. + quand on sort, anim de fin de tir.
+ok/ fonction pour récupérer la hauteur en x,y. - si dans du dur, + si en l'air.
+ok/ Sauvegarde du nombre de bombes au changement de vehicule.
+ok/ coup de couteau sous marin, voir les boîtes de col. pb de touché. Vu : sprite pas mis à jour.
+ok/ spr : il va falloir le coup de couteau sous marin.
+ok/ couteau : voir pour tester les monstres qui ne donnent pas proximity (on passe à côté d'un monstre, on met un coup de couteau, et on se retrouve à côté d'un zombie qui ne teste pas le couteau...).
+non > pas simple à mettre en oeuvre/ plyr : coup de couteau, générer un tir de 1 ou 2 frames avec un sprite invisible.
+non non NON ! > => avec le tir, ça marcherait pour tout le monde (sauf POW)...
+ok/ heros : couteau.
+ok/ marquer le sprite en cours quand coup de couteau dans gShoot. Tester dans le monstre si checkproximity renvoie 1.
+ok/ plyr : coup de couteau, faire un 'proximity' dans gshoot, les monstres disent oui s'ils sont assez près. Si proximity, on tente de lancer le couteau. Si déjà en tir normal, la prio d'anim fera le truc.
+Bof, le remappage va prendre du temps à la lecture, la modif avec la couleur de fond suffit./
+	\spr : voir si on peut mettre 1 pixel en haut à gauche = couleur de bkg de capture. => Si c'est possible, plus à se faire chier avec les palettes ! (le n°2 = la couleur de fond de la planche).
+	\=> Ou encore mieux, on lit la couleur de fond, et la première couleur rencontrée différente est la couleur de bkg du sprite. Plus qu'à remapper la planche.
+ok/ spr : première modif simple pour ne pas se faire chier avec les palettes : la couleur 0 doit rester la couleur de fond de sprites. La première couleur rencontrée est celle du bkg.
+ok/ slug sub : joueur InOut.
+ok/ slug : faire un monstre slug / Avec un état (et un compteur) pour le faire clignoter/exploser si plus d'énergie. > A générer quand on descend du slug ? - => OUI /// NON > Ou alors on garde un ptr sur ce monstre pour quand on descend ? => soit le monstre reste actif, soit on le réveille et on change sa pos quand le héros descend. => NON
+ok/ tirs : diviser : faire un shift au lieu du div. (après le homing ?)
+ok/ slug : externaliser la génération du monstre, servira pour tous et pour la mort.
+ok/ héros : bloquer le déplacement quand tir + crouch. (j'ai pas les sprites qu'il faut).
+ok > et bonne solution !/héros, rendre le contrôle au joueur après sortie du slug (kb).
+ok/ FireHitCheck : Optim : Récupérer les rect de col dans FireManage, ça évitera d'aller les chercher à chaque tour de boucle de FireHitCheck.
+ok/ spr : e_Spr_HeroSub_SlugOutGen à recaler (rotation avec les flips foireuse).
+ok/ spr : recaler les trainées du sub.
+ok> clef anm dans CheckSide/ slug sub : sortie en haut de l'écran, évidement ça bugge (joueur hors map).
+ok/ spr engine : voir s'il ne faudrait pas cleaner les bits de flips de NO_SPRITE dans les tests (ex: clignotement avec un xor du flip x).
+oui/ changement de véhicule : initialiser le sprite de col du héros ? ou gShoot.nPlayerSprCol = SPR_NoSprite; ?
+ok/ tirs : priorité (derrière le shobu, mais devant les monstres en règle générale).
+pas la peine/ tirs : roquette sous marin : // refaire une explosion avec une zone plus grosse pour le joueur ?
+ok/ mst : r-shobu : mettre les tirs derrière le monstre.
+ok/ scroll : quand le joueur saute sur une pf (transparente, enfin, du sol quoi), le scroll ne recale pas tant que le joueur ne touche pas => il peut monter plus haut que l'écran. => mettre un last gnd = y et aller jusque là si le joueur est plus haut que ce point et ne touche pas.
+ok/ tirs : trails.
+ok/ slug sub : collisions avec le décor.
+ok/ slugs : On peut trouver le point d'entrée au niveau de la zone de col d'entrée : Y1 + milieu de X1 X2.
+ok/ Vulcan cannon commencé, il va falloir un slug !
+ok/ mort + tir : on voit l'anim de fin de tir (shotgun + flamethrower).
+ok/ tirs : fire hit check, prendre en compte la rotation des sprites (vulcan).
+non/ deplacement : peut-être bloquer qques frames le joueur quand tir au shotgun.
+ok/ kb : si on veut un buffer à nous, passer le ptr pKeys en tableau pKeys[SDLK_LAST] + poker dans les events kbup et kbdown.
+ok/ Empêcher le perso de dépasser les bords de la map.  >>> en cours, ok en x. / Ok pour la tête en haut.
+ok/ palettes par x > encore simplifiable/ A la fin, voir comment réduire le nombre de couleurs par palette, peut-être limiter à 32 couleurs par planche ?
+ok/ trouver un truc pour le clavier, pour ne pas "bloquer" après les actions et qu'il ne faille pas relacher. => faire un buffer clavier, et recopier UP DOWN... depuis le buffer SDL aux bons moments.
+ok/ tirs : grenade : point de lancement debout / accroupi ? => laisser en dur pour pouvoir lancer des grenades quand on tire ?
+ok/ Tirs. (gun / shotgun / machgun / flamethrower / grenade).
+ok/ grenade : passer les tirs à $1x, mettre les anims de tirs grenade en $0x.
+ok/ vehicule : Faire un hero_swim en plus du héros naked.
+ok/ Voir comment faire une anim sur le décor, mais qu'on lance 1 fois et c'est fini (ex: ouverture trappe niveau 8). => ou avec une petite anim en sprites ? => Oui.
+ok/ !!! Prioritaire : règler le pb de la tête qui sort de la map en Y !!!! (ex : lev 8).
+ok/ sprites : décalage marco sub gun inclinaison 2. (8 pixels trop à droite sur le 6ème sprite). Idem sur les jambes.
+ok> palettes de 8/ Palettes : Faire des palettes (8, *16*, 32 ou 64, regarder les palettes pour voir le meilleur chiffre) de x couleurs et pas 256.
+ok/ vulcan : ne pas tourner le canon si plus de touches de direction enfoncées.
+ok/ mst : r-shobu : freq. de tir.
+ok/ mst : r-shobu : arrival
+ok/ mst : zombie > celui dont j'ai les graphs : soit il brûle, soit il tombe et revient. + zombie au shotgun, mort générique. + sang qui gicle si balles, et tombe.
+non/ cache : Noter lors des recherches les positions de x blocs libres ? => ca marcherait, mais il y a peu de recherches de blocs > à 2, et c'est seulement là que c'est intéressant...
+non > car update slt si taille==1/ cache : voir si pour la pos de la recherche suivante, j'ai bien mis adr + case[x] à la place de adr + 1.
+ok/ mst : zombie, sang qui gicle > en fonction de la pos du joueur par rapport au sprite.
+non/ Fire : voir si on peut récupérer les coordonées de l'imact pour projection de sang (ou alors la coller sur le torse ? => Oui).
+ok/ dusts : flag pour flipx (ex: sang du zombie).
+ok/ dust : gérer les flips. => passer des flags (servira pour gravité, par exemple).
+ok/ anims: faire un RND pour mettre des anims idle différentes de temps en temps, etc...
+ok/ spr : prévoir une 'palette' pour les hits. => par exemple ne garder que le R et masquer le G et B. => remplacer le flag shadow.
+ok/ Faire des "items de quête" pour ne pas faire réapparaitre certains monstres. => Une table à la con de 256 cases qu'on initialise à 0 dans MstInit().
+ok/ mst : monstre qui bloque le scroll + le joueur dans la fenêtre. Avec item de quête pour le libérer.
+ok/ monsters.c GetBits : mettre la gestion du signe comme dans l'éditeur. => Et amélioré !
+ok/ mst : mettre un bit de flip.
+ok/ cache : optim recherche des vides en plaçant le nb de cases à sauter dans le premier espace.
+ok/ mst : mettre à jour l'état quand le monstre sort.
+ok/ Revoir les priorités : Afficher la capsule weapon au dessus de tout. Prévoir des dust sous les sprites.
+ok/ editeur : si paramètres "aaa - bbb - ", renvoie espace à la place de undefined pour le dernier.
+ok/ tirs : faire un no clip ? (ou quand vitesse == 0 ? => non, car la grenade ne doit pas être clippée non plus) => pour les explosions par exemple.
+ok/ spr : on va pouvoir remettre *2 au gnSprBuf au lieu de x4, depack spr flippés en direct. (si jamais de cache full, on devrait même pouvoir le virer, mais bon).
+ok/ mettre les armes du weapon capsule dans l'ordre des define des armes du héros !
+ok/ anm : implémenter e_Anm_RndGoto.
+ok/ spr : voir pour faire un cache ? > mais ça ne semble pas faire gagner grand chose...
+ok~non > à voir à la toute fin/ SprGetGfxMskPtr : //todo: du coup, on doit pouvoir se passer des paramètres ppGfx et ppMsk. !!! Sauf si on remet le cache. !!!
+ok/ cache : voir si on peut aussi stocker les sprites flippés. > ça va être obligatoire.
+ok/ tir : lance flames => faire l'anim avec base de shotgun.
+ok~non/ spr : voir si on peut optimiser l'affichage, soit en comptant les pixels à afficher sur une ligne, soit en récupérant un masque 0xFFFFFFFF, (soit en skippant les pixels à vides à gauche (c'est déjà ça de gagné) => ah ben non, flipx... => si, en direct). => gain insignifiant, voire pas de gain.
+non/ cache : essayer de ne cacher que les gros ? => En fait, cacher très peu de temps, l'intérêt est surtout de ne pas générer les masques plusieurs frames d'affilée.
+ok/ spr : voir si on pourrait se passer du masque qui prend beaucoup de place en mémoire pour juste des 0 ou FFFF.
+ok/ spr : lire les sprites en 8 bits, sauver une palette (format 16 bits) par planche. => Générer le sprite+masque à la volée.
+ok>non /tirs : voir si on passe un prm pour autoriser ou pas l'enchainement de tir à ReleaseSlot(). (clip map des grenades). Ou pas.
+ok/ tirs : voir le clip : pas pour les explosions, ni les grenades. MAIS il faut dégager les tirs sortis de la map.
+ok/ tirs : clip map, ne pas faire les chaînages de tirs.
+ok/ mitrailleuse : mettre un petit random sur l'angle ?
+ok/ tirs : hitcheck : renvoyer 16b h = code hit / 16b b = damage.
+ok/ tirs : ajouter une prio comme pour les ennemis. (voir le lance flames).
+ok/ grenade, rajouter une vitesse initiale, passer celle du joueur ? => Mis pour tous les tirs H du joueur et qui bougent.
+non, vu les niveaux, pas d'escaliers. En plus c'est super chiant. /escalier => bloc de col qui regarde si stick vers le haut pour recaler ou pas. Niveau du sol seulement.
+non, vu les niveaux, pas d'escaliers. En plus c'est super chiant. /escalier : En fait, niveau du sol = niveau sur le bloc d'à côté (évidement, il faut que ce soit plat).
+non/ anm : lancer les tirs ? (prévoir un endroit pour le flag sens). > Pas sûr. => Non en fait. Ou pour les ennemis ?
+ok/ refaire SprCheckColBox avec les rectangles.
+non => ça prendrait trop de mémoire / plus tard : spr : voir si on fait les flips x à la lecture et seulement les flips y en direct.
+ok/ tirs : ne pas supprimer les tirs du shotgun et les explosions quand ils touchent ! faire un flag dans la table générale.
+ok/ grenade : mettre zones de col. Si touche ennemi, explose à sa position. > zones de col mises.
+ok/ Tirs : Revoir FireHitCheck => mettre les zones pour certains tirs (explo grenade, fusil à pompe). => pour tous les tirs. > faire un dérivé de spr checkcol avec lecture d'un seul rect dans la boucle.
+non/ Tirs : prévoir la grenade, qui ne touche pas avant d'exploser (génère un autre tir). => ok, pas de zone de col sur le sprite.
+ok/ Editeur, mettre une valeur par défaut à un prm ? (entre parenthèses).
+ok/ scroll : avec excentrage, le niveau 8 est tout pourri !
+ok/ sprites : Beaucoup de reallocs. => allocations par blocs.
+ok/ mst : il va falloir un etat pour savoir si un monstre est déjà entré ou pas, si il est mort...
+ok/ scroll : voir le placement de ça : if (nPlane == gMap.nHeroPlane) MstCheckNewCol(sBlMapX, sBlMapY);				// Teste si des monstres doivent entrer.
+ok/ mst : 2 tables de ptrs, 1 triée en x, l'autre en y. !!! Index des monstres !!!
+ok/ mst : optimiser la recherche de base de MstCheckNewCol et MstCheckNewLine (dochotomie ou qqchose). => 2 tables de ptr, une triée en x, l'autre en y.
+ok/ mst : recherche : ensuite, garder un ptr sur la colonne en cours.
+ok/ Plateformes mobiles.
+ok/ pf mob : Faire le déplacement avec les directions path.
+ok/ pf mobiles : test de sortie de gestion quand immobiles au point de départ.
+ok/ scroll : Y : regarder le y player, mais ne faire suivre que si le joueur est au sol || sort des limites.
+ok/ scroll : X : excentrer la vue.
+ok/ scroll : InitScreen aux positions du scroll.
+ok/ Finir la gestion des monstres : recherche.
+ok/ Faire un init screen pour les monstres.
+ok/ mst : reste des cas ou les monstres n'apparaissent pas... lev6.
+ok/ joueur : spr de col en cours.
+ok/ tirs : lancer 1 fois le tir sur l'image. //// p'tet : lastimg = (curgun << 8) + img.
+ok/ mettre en .h : u32 AnmCheckNewImgFlag(s32 nSlotNo)
+ok/ heros : Tir gun = interruptible / shotgun = non interruptible / machgun = sans arrêt.
+ok/ Ne pas tester les collisions des tirs en dehors de la map.
+ok/ spr : mitrailleuse tir en haut, pas de col 3.
+ok/ Faire un game.c et game.h
+ok/ lev6 : arrière plan "tremble" dans le différentiel. => virgule las clearée dans le recalage du joueur.
+ok/ flips rectangles de sprites.
+ok/ Update blocs de map.
+ok/ anm : flag pour les pas dans les marches. > Le joueur testera ça si nécessaire.
+ok/ mettre playerlastgnd dans gHeros.
+ok/ EdTile : Si pas de nom de fichier, lecture du .edt présent dans le répertoire.
+ok/ Blocs animés sur le décor.
+ok/ blocs animés, planche block4 prête pour test + map montée. Faire des rectangles.
+ok/ pf ok, mais éviter les cas merdiques au montage.
+ok/ pf transparentes.
+ok/ Passer nPlayerGnd dans la structure du joueur.
+ok/ Passer nAnmTop dans la structure du joueur.
+ok/ mettre le message d'erreur "out of anim slots" comme dans le bomberman.
+ok/ Loader : Encoder les hauteurs des blocs alpha.
+ok/ parfois bloque dans les pentes. Voir si c'est les pf transparentes, mais je crois que c'est plutôt le +sdx sur le Y.
+ok/ coller le perso au sol dans les descentes.
+ok/ scroll : récupérer les RGB de transparence dans le loader.
+ok/ Loader : Relire les pages de codes des blocs.
+ok/ LoadLevel : Lire les planches en PSD.
+ok/ Loader : vérifier que la taille des planches lues soient bien égales à celles sauvegardées.
+ok/ scroll : comme pour editeur, tester lg plan == lg écran.
+ok/ pf: sprites, flip x, flip y.
+ok/ finir flip x.
+ok/ edtile : faire la lecture des PSD + affichage de la couche alpha 1.
+ok/ edtile : faire la visu avec le différentiel.
+ok/ scroll : faire un planeLg et planeHt pour le différentiel.
+ok/ scroll : faire un variable pour plan de ref.
+ok/ scroll : isoler le placement du scroll (et le refaire aussi).
+//--
+//* Autre solution si on a plein de mémoire : créer tous les flips à la lecture.
+//* Solution intermédiaire : pour un platformer, peu ou pas de flip y et beaucoup de flip x. On peut créer le flip x à la lecture, et créer le flip y à la main.
+// (* Lorsqu'on le crée, le conserver ? Pb : Soit malloc => pas bien / soit on réserve les tailles au départ et alors autant calculer tous les flips).
+=> non, pas plein de mémoire, spr + masques prennent énormément de place en 16 bits.
+//--
+
+
+#include <windows.h>
+LARGE_INTEGER a,b,c;
+QueryPerformanceFrequency(&c);
+QueryPerformanceCounter(&a);
+// truc à timer
+QueryPerformanceCounter(&b);
+printf("spr: %d %d %d\n", (int)(b.QuadPart - a.QuadPart), (int)a.QuadPart, (int)b.QuadPart);
+
+

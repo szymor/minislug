@@ -1,0 +1,140 @@
+
+* Format de fichier EDT :
+
+3B : Header : "EDT"
+2B : Version du fichier : 0x0100
+
+Ensuite, ce sont des containers.
+
+
+* Chaque container à un header de la forme suivante :
+
+#pragma pack(1)
+// Header de chaque container.
+struct SContainer0
+{
+	u32	nSz;
+	u16	nType;
+	u16	nPadding;
+};
+#pragma pack()
+
+- nSz contient la taille totale bu bloc : taille de la struct SContainer0 + taille des datas derrière.
+=> Pour passer au container suivant, il faut skipper nSz bytes.
+
+- nType peut prendre les valeurs suivantes :
+	e_FileSection_Map	> Infos de la map.
+	e_FileSection_Plane	> Datas d'un plan.
+	e_FileSection_Cmd	> Datas des monstres d'un plan.
+	e_FileSection_Misc	> Infos diverses.
+
+
+
+* e_FileSection_Map :
+
+ Pour stocker les infos générales de la map : Nb de plans, hauteur, largeur...
+
+ Il y doit y avoir un (et un seul) enregistrement de ce type.
+ On doit le trouver avant les containers de type e_FileSection_Plane.
+
+ Après le header, on trouve les données suivantes :
+
+#pragma pack(1)
+// Struct pour datas de la map.
+struct SMap0
+{
+	u32	nMapLg, nMapHt, nMapPosX, nMapPosY, nPlanesNb, nFirstWnd, nActivePlane;
+};
+#pragma pack()
+
+
+
+* e_FileSection_Plane :
+
+ Pour stocker un plan (n°s des blocs utilisés).
+
+ Après le header, on trouve les données suivantes :
+
+#pragma pack(1)
+// Struct pour datas d'un plan.
+struct SPlane2
+{
+	u32	nPlaneNo, nFlags, nWndPosX, nWndPosY;
+	u32	nBlkLg, nBlkHt;			// Largeur et hauteur du plan en blocs 16. Pour éventuel remap à la relecture.
+	u8	nHasCmd;				// Sera surtout utile à la lecture par le jeu, pour skipper le plan et récupérer les monstres dans la section suivante.
+	u8	nPad0, nPad1, nPad2;	// Padding.
+};
+#pragma pack()
+
+ Les plans doivent être stockés dans l'ordre ! (Il peut y avoir des containers entre, notament
+de type e_FileSection_Cmd).
+
+ Ensuite :
+1B : Nb d'octets du nom de fichier graphique.
+xB : Le nom de fichier graphique du plan, sans 0 terminal.
+
+ Puis, s'il y en a les codes des blocs (u8) :
+(PlanLg * PlanHt)B : Les codes de chaque bloc de la planche.
+ Pour savoir s'il y en a, on force le bit 'e_FlgFile_Plane_Codes' dans 'nFlags' de SPlane2 à l'écriture.
+ Attention, à l'écriture, la taille du plan est celle de la planche.
+ A la lecture, il faut absolument utiliser nBlkLg et nBlkHt de SPlane2, car la taille de la planche peut avoir changé.
+
+ Et enfin :
+(MapLg * MapHt)L : Le plan en lui même.
+
+
+
+* e_FileSection_Cmd :
+
+ Pour stocker tout ce qui concerne les monstres d'un plan.
+
+ Quand on tombe sur ce container, ça veut dire qu'il faut ajouter un fichier de commandes au dernier
+plan ajouté.
+
+ Après le header, on trouve les données suivantes concernant le fichier de commandes, sauvegardé
+dans le EDT (desfois qu'il disparaisse, qu'il change...) :
+
+// u8 : Nb de bytes du nom de fichier.
+// char * x : Nom de fichier, sans 0 terminal.
+// u32 : Date du fichier.
+// u32 : Nb de bytes dans le fichier de commandes.
+// char * x : Le fichier de commandes, sans 0 terminal.
+
+ Puis les datas des monstres :
+
+// u32 : Nb de monstres.
+// xB : Datas des monstres, les uns à la suite des autres : SMst0 + x bytes de data.
+
+#pragma pack(1)
+// Struct pour lecture/sauvegarde d'un monstre.
+struct SMst0
+{
+	u32	nPosX, nPosY;
+	u16	nMstNo;		// = No du bloc.
+	u16	nNbBytes;	// Nb de bytes utilisés.
+};
+#pragma pack()
+... suivi de nNbBytes octets, pour chaque monstre.
+
+
+
+* e_FileSection_Misc :
+
+ Pour stocker des données diverses.
+
+ Après le header, on trouve les données suivantes :
+
+#pragma pack(1)
+// Struct pour datas misc.
+struct SMisc0
+{
+	u32	nFlags;						// gMisc.nFlags.
+	u8	nTransR, nTransG, nTransB;	// RGB de la couleur de transparence.
+	u8	nPad0;						// Padding.
+	u16	nVisuLg, nVisuHt;			// Taille de la visu (en pixels).
+
+	u32	nBlank0, nBlank1, nBlank2, nBlank3, nBlank4;	// Au cas ou on ait besoin de sauver plus de trucs par la suite.
+};
+#pragma pack()
+
+

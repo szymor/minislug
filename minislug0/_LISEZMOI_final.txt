@@ -1,0 +1,127 @@
+
+ Mini Metal Slug Project.
+ Done by Clément CORDE.
+ Contact: c1702@yahoo.com
+
+ All graphical content (c) Nazca Corp., SNK and PlayMore.
+
+ Using rips by (in no particular order): Gussprint, The Mad Soldier, Random Rebel Soldier, C2000MC/Futaokuu, Random Talking Bush, Kevin Huff, Grey Wolf Leader, Goemar, Magma Dragoon, AzRaezel/Dan, The_Protagonist, Tk big_mickey_k, Grim, @$$h0l3 (what a nickname is that!?), Crazy Slug, Xezan... and some 'unsigned' rips. Hope I'm not forgetting anyone.
+
+ Now using ST-Sound by Leonard/OXG (http://leonard.oxg.free.fr/), and ST era music by David WHITTAKER.
+
+
+
+> Préambule :
+
+ Bonjour,
+
+ Après plusieurs interruptions plus ou moins longues (un Bomberman, préparation de concours et autres...), voici enfin la version finale de ce petit projet.
+
+ Je ne suis pas arrivé au niveau de qualité que j'aurai voulu atteindre, mais j'ai déjà passé assez de temps sur ce programme, et du temps, en ce moment je n'en ai plus trop.
+
+ Le gros point faible est toujours le son. Je n'ai que quelques WAV et je ne maîtrise pas du tout Audacity, donc jai fait comme j'ai pu. Ce n'est clairement pas non plus ce que je maîtrise le mieux au niveau programmation, pour ne pas dire que je n'y connais strictement rien. Mise à jour : J'ai rajouté ST-Sound pour avoir de la musique.
+
+ Vous excuserez aussi le finish un peu 'lame'...
+
+
+
+> Contrôles :
+
+- Sur le menu, F1 pour switch : 1 crédit / 3 crédits / crédits infinis. Attention, ça ne fonctionne pas en cours de jeu, et c'est voulu.
+
+- F9 : Toggle mode normal 320x224 / 2x 640x448 / TV2x 640x448.
+- F10 : Toggle full screen / Windowed.
+- F12 : Pause.
+
+- Haut, bas, droite, gauche : Déplacement.
+- Bouton A : Tir.
+- Bouton B : Saut.
+- Bouton C : Bombe.
+
+- Bas + Bouton B pour sortir d'un véhicule.
+
+ Les touches par défaut sont les flèches de direction, V pour le Bouton A, C pour le Bouton B et X pour le Bouton C.
+
+ Lorsque j'ai présenté la preview, il revenait assez souvent dans les commentaires que les touches étaient mal choisies (moi elles me paraissaient pas mal, mais bon). J'ai donc bricolé un petit exécutable qui vous permet de configurer vos touches. C'est très simpliste, mais je n'avais pas envie de passer plusieurs heures à faire un écran de config dans le jeu. Je pense que ça fera l'affaire quand même. Pour la ligne concernant le mode vidéo, 0, 1 et 2 correspondent aux modes 320x224, 2x et TV2x.
+
+ J'ai aussi ajouté la gestion du joystick. Je n'ai pu faire mes essais qu'avec un joystick (en état moyen) prêté, mais ça semble fonctionner. Si un joystick est branché, l'utilitaire de configuration vous permettra de configurer les 3 boutons nécessaires au jeu (après la configuration du clavier). Attention à bien conserver les 4 directions et 3 boutons et de ne pas mettre par exemple le saut sur 'haut', ça rendrait le jeu injouable dans certains niveaux.
+
+ Note : Quand on utilise un mode écran 32 bits (ou pire, 24 bits) sous son OS, les modes 2x et TV2x consomment pas mal de temps. J'ai l'impression que la conversion 16bits > 32bits par SDL est assez gourmande. Pour une rapidité optimum, je vous conseille donc de passer en mode 16 bits.
+
+
+
+> Fichier "high.scr" :
+
+ Et non, ce n'est pas un économiseur d'écran, c'est le fichier des high-scores. Vous pouvez le supprimer pour le remettre à zéro, un nouveau fichier sera recréé.
+
+ Dans le package, je vous ai mis un score à moi en première position, obtenu en jouant normalement sans cheats. Ca fait déjà un petit objectif même si je ne doute pas qu'on puisse faire mieux (Pour info, le score a été obtenu en finissant le jeu en 1 crédit).
+
+
+
+> Fichiers utiles :
+
+minislug.exe       - Jeu, exe pour Windows (XP).
+minislug_cfg.exe   - Utilitaire de configuration, exe pour Windows (XP).
+elf-minislug-bpp   - Jeu, elf pour Linux (Debian 5).
+elf-minislug_cfg   - Utilitaire de configuration, elf pour Linux (Debian 5).
+
+mslug.cfg          - Fichier de configuration (binaire).
+high.scr           - Fichier des high-scores (binaire).
+
+
+
+<--- Texte de la preview (extraits) --->
+
+
+
+> Introduction :
+
+ Bonjour,
+
+ J'étais cette fois-ci parti sur un projet de petit platformer tranquille (le but du jeu étant pour moi de voir si je n'avais pas tout oublié) et de fil en aiguille, je me suis retrouvé à faire un mini Metal Slug.
+
+ Attention, il n'a jamais été question pour moi de prétendre faire un jeu aussi cool et complet que l'original pour plusieurs raisons :
+- D'abord je suis tout seul pour tout faire : Programmation bien sûr, mais aussi découpage des sprites, mise en planche des décors et montage des maps, level design, réglages... etc... Donc je fais ce que je peux.
+- Ensuite, je ne sais pas forcément faire tout ce qu'il y a dans Metal Slug.
+- Enfin et surtout, Metal Slug est une légende. Ce serait quand même assez prétentieux de prétendre faire aussi bien qu'une légende tout seul dans son coin.
+
+ D'autres choses rentrent aussi en compte :
+- Malgré tous les rips concernant Metal Slug qui trainent sur le net, je pense que tout n'a pas été rippé. (Quelqu'un a-t-il vu les sprites de Marco "zombifié" par exemple ?).
+- Je dois m'adapter à des graphs existants. Il est plus simple de demander à un graphiste de faire des graphs en ayant une idée de comment on va faire le code derrière que de faire le code en fonction des graphs.
+- La mise en forme des graphs est une tâche très longue (16 décors comprenant entre 1 et 4 plans, sans compter ceux que j'ai montés mais pas inclus, et près de 4500 sprites tout de même).
+- Je n'ai pas les ROMs ni MAME et ma Neo-Geo CD a rendu l'âme il y a bien longtemps. Donc je ne peux pas jouer pour voir comment se comporte tel ou tel ennemi. Je me contente de quelques vidéos et de ce dont je me rapelle d'il y a 10 ans.
+- Metal Slug est bourré de petits détails. Vouloir tenter de tout refaire à l'identique est mission impossible, à plus forte raison quand l'équipe est composée de 1 personne.
+
+ Accessoirement, j'ai fait du point de vue technique à peu près ce que je voulais faire, donc je suis plutôt content.
+
+ Les "gros" trucs non refaits seraient je pense le mode 2 joueurs, le tir sur des angles de la mitrailleuse et les états alternatifs (gros, momie, zombie...). On verra si un jour j'ai du temps et que je trouve les ressources qui vont bien, mais ce n'est pas à l'ordre du jour (sachant que pour les deux derniers points, je n'ai pas trouvé tous les sprites adéquats).
+
+
+
+/!\ Merci de bien noter qu'il s'agit d'une preview ! Tout n'est pas fini (et je ne montre pas tout), mais je pense que ça donne une bonne idée de ce que sera le jeu au final. /!\
+
+
+
+> Technique :
+
+ Le projet est codé en C avec la lib SDL, et uniquement SDL (que j'utilise du reste très peu). Et donc pas de SDL_xxx.
+
+ Comme j'aime bien réinventer la roue, tout est fait maison : Rotations et zooms de sprites, lecture du PSD, du GIF animé, rotations 2D et remplissage de surface, etc... Je ne sais pas si c'est plus ou moins rapide que d'utiliser des routines dans des libs tierces, mais c'est en tous cas bien plus amusant !
+
+
+
+ A l'heure actuelle, j'ai décidé de ne pas donner le code source pour les raisons expliqués sur ma page (http://oldschoolprg.x10.mx/projets.php). Je me cite :
+
+"Mes programmes valent ce qu'ils valent mais je pense qu'ils fonctionnent à peu près correctement et représentent quand même une certaine somme de travail.
+
+Malgré quelques bonnes surprises (comme le portage de l'Arkanoid sur Dingo A320 et sur Pandora), j'estime avoir eu trop peu de feedback : Par exemple sur CPP France, c'est en moyenne 2 commentaires (dont souvent 1 par un collègue) par projet pour plus de 500 téléchargements. C'est bien peu.
+
+A partir de là, deux explications :
+- Soit mon code est merdique.
+- Soit mon code est potable et ceux qui le récupèrent n'ont pas de reconnaissance pour le travail fourni.
+
+Dans les deux cas, je ne vois pas de raison pour continuer à distribuer mes sources. Je les garderai donc dorénavant pour moi, je ne diffuserai plus que les binaires."
+
+
+
+<End of File>

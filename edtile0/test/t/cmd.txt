@@ -1,0 +1,286 @@
+
+; Format :
+; Entête : [mst<x>] Nom du monstre (optionnel)
+; Paramètres :
+; - Avec valeurs texte : Nom_du_prm = Bit start : Bit End : Val 0 - Val 1 - ...
+; - Avec des valeurs numériques : Nom_du_prm = Bit start : Bit End :
+; - Avec des valeurs numériques signées : Nom_du_prm = -Bit start : Bit End :
+; Pour mettre une valeur par défaut : Nom_du_prm (valeur par défaut) = ...
+
+
+[mst0] Platform
+Gfx = 0:7: Test - Lev5_0 - Lev6R - Lev6L - 
+
+[mst1] Foreground sprite
+Gfx = 0:7: L8_WagonL - L8_WagonR - L8_Loco - L3_WallR - L12_WallR - L13_Sub_P0 - L13_SubP1L - L13_SubP1R - L7_TubeUp - L7_TubeDown - L13_WaterfallBottom -
+
+[mst2] Mini UFO (Path)
+Nb = 0:7:
+
+[mst3] POW
+Type = 0:2: Sitting - Totem - Hanging
+Flee(1) = 3:3: Disappear - Run 
+Drop = 4:7: Nothing - S_Shotgun - H_Machinegun - F_Flamethrower - R_Rocket - Gas_Tank - Ammo_Box1
+
+[mst4] Weapon Capsule
+Type = 0:3: S_Shotgun - H_Machinegun - F_Flamethrower - R_Rocket - Gas_Tank - Ammo_Box1
+Boxed = 4:4: No - Yes		; Une caisse contient l'item ?
+Location = 5:6: Normal - Space - Underwater - Air	; Space = avec sinus / Underwater & Air = pas de gravité.
+
+[mst5] Scroll Lock X
+Give itm = 0:7:			; N° item de quête à donner une fois le scroll locké.
+Wait itm = 8:15:		; N° item de quête attendu pour libérer le scroll.
+BlkLg(20) = 16:23:		; Largeur en blocs à bloquer.
+
+[mst6] R-Shobu (half-boss)
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois mort pour libérer le scroll.
+
+[mst7] Gauche/Droite
+Type = 0:3: Zombie Teen - Zombie Fat - Mars People - Brain Bot - 4 - 5 - 6 - 7 - 8L - 9L - L Mars People -
+Zone = 4:7:
+
+[mst8] Bkg modif		; Monstre à placer à l'endroit de la copie (bloc haut gauche).
+ID = 0:7: L8_PF1 - L8_Door1 -
+Wait itm = 8:14:		; N° item de quête attendu pour démarrer.
+Bkg = 15:15: Before_Anm - After_Anm	; Update bkg avant/après l'anim.
+Blk org = 16:31:		; N° du premier bloc en haut à gauche de la zone à copier.
+Blk lg = 32:39:			; Lg de la zone à copier.
+Blk ht = 40:47:			; Ht de la zone à copier.
+
+[mst9] Slug
+Type = 0:3: Submarine - Tank - Helicopter - Helicopter_No_Exit - Rocket
+State = 4:7 : Wait - Dies(reserved)
+Energy(192) = 8:15:
+Vulcan = 16:23:			; Angle du vulcan cannon.
+Bombs(10) = 24:31:
+Slug Angle(0) = 32:39:		; Angle du slug (Tank).
+
+[mst10] Jellyfish
+Type = 0:3: Small - 
+
+[mst11] Objects item contact
+ID = 0:7: L8_Lever - L8_Lock - 
+Touch type = 8:9: Contact - Shot - Both
+Prio = 10:11: Foreground - Norm - 
+Give itm = 16:23:		; N° item de quête à donner après contact.
+
+[mst12] Hero blocker		; Monstre invisble pour bloquer le héros.
+Height = 0:7:			; Hauteur sur laquelle bloquer, en blocs. (Depuis le monstre et au dessus, 0 = Hauteur infinie).
+Width(1) = 8:14:		; Largeur sur laquelle bloquer, en blocs. (Depuis le monstre et à droite).
+Shots = 15:15: Non_block - Block	; Bloque les tirs ?
+Wait itm(0) = 16:23:		; Item de quête pour faire disparaître le monstre. 0 si pas de disparition.
+
+[mst13] Next level		; Monstre pour passer à la map suivante.
+Height = 0:7:		; Hauteur sur laquelle tester, en blocs. (Depuis le monstre et au dessus, 0 = Hauteur infinie).
+
+[mst14] Reb Soldier 0
+Type = 0:7: Rifle - Mortar - LRAC - Gun_Grenade - RESERVED - Shield
+OffsX = -8:11:			; Décalage X.
+Move = 12:12: No - Yes		; Le soldat bouge ou pas.
+From = 13:13: Right - Left	; Apparition à droite ou à gauche de l'écran.
+Parachute = 14:14: No - Yes	; Parachuté ?
+Jump = 15:16: No - Random - Always	; Saut en bout de pf.
+Org OffsX = -17:22:		; Décalage de l'origine de la zone.
+Special Init = 23:26: None - Truck Jump - SuspSub Jump - Hero Height -	; Inits spéciales.
+RESERVED2 = 27:31:
+
+[mst15] Truck 0 - Trooper
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois mort pour libérer le scroll.
+
+[mst16] Bkg modif2		; Monstre à placer à l'endroit de la copie (bloc haut gauche).
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Modif Nb(1) = 8:11:		; Nb de modifs. Chaque modif commencera à l'item de quête suivant.
+Blk org = 16:31:		; N° du premier bloc en haut à gauche de la zone à copier.
+Blk lg = 32:39:			; Lg de la zone à copier.
+Blk ht = 40:47:			; Ht de la zone à copier.
+Offset = 48:63:			; Offset à ajouter à chaque tour.
+
+[mst17] Explosions		; Monstre à placer sur le bloc haut gauche du carré.
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Width = 8:15:			; Largeur du carré en blocs.
+Height = 16:23:			; Hauteur du carré en blocs.
+Frames = 24:31:			; Nb de frames.
+Debris = 32:35: None - Wood - Metal
+Prio = 36:36: Under - Over	; Priorité d'affichage (toujours dessous, sauf boss 1).
+RESERVED = 37:39:		;Pour plus tard (flag pour générer des explosions qui sont des tirs ?).
+
+[mst18] Bkg shots check		; Monstre à placer sur le bloc haut gauche du carré.
+Width(1) = 0:7:			; Largeur du carré en blocs.
+Height(1) = 8:15:		; Hauteur du carré en blocs.
+Energy = 16:23:			; Energie.
+Nb(1) = 24:31:			; Nb d'états possibles.
+Give itm = 32:39:		; 1er item donné. +1 à chaque fois.
+Offset x = 40:43:		; Décalage x dans le bloc.
+Offset y = 44:47:		; Décalage y dans le bloc.
+
+[mst19] FG sprite 2 states
+Gfx = 0:7: L5_Sub_Fence - L13_PF1L_Swamp - L13_PF1R_Swamp - 
+Wait itm = 8:15:		; N° item de quête attendu pour 2ème état.
+
+[mst20] Boss
+No = 0:3: Boss1 - Boss2A - Boss2B - Boss3
+Wait itm = 8:15:		; Item de quête attendu.
+RESERVED1 = 16:31:
+
+[mst21] Scroll Y
+OffsY L = -0:7:			; Offset par rapport au monstre / côté gauche.
+BlkHt L(14) = 8:15:		; Hauteur en blocs du débattement / côté gauche.
+OffsY R = -16:23:		; Offset par rapport au monstre / côté droite.
+BlkHt R(14) = 24:31:		; Hauteur en blocs du débattement / côté droite.
+
+[mst22] Exp barrel
+Type = 0:3: Lev13_Barrel - 
+Life = 4:7:
+Give itm1 = 8:15:		; 1er item donné.
+Give itm2 = 16:23:		; 2ème item donné après quelques frames.
+
+[mst23] Falling objects
+Type = 0:7: Lev13_Hanging_Rock - 
+OffsetX = 8:11:			; Offset x.
+OffsetY = 12:15:		; Offset y.
+Wait itm = 16:23:		; Item attendu pour chuter.
+
+[mst24] Hard objects
+Type = 0:7: Lev13_Rock - SandBagsHeap -
+
+[mst25] Rocket Diver
+From = 0:0: Front - Back	; Attaque par devant ou derrière.
+Prm = 1:7:			; tmp
+
+[mst26] Girida-0
+From = 0:0: Front - Back	; Attaque par devant ou derrière.
+ZoneMax = 1:7:			; Zone de déplacement max, 0 = pas de limite.
+
+[mst27] Half-Boss
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois mort pour libérer le scroll.
+Type = 16:19: RShobu - Masknell -
+Nb(1) = 20:23:			; Nb de monstres dans la séquence.
+Delay = 24:27:			; Timing entre les monstres.
+Prm = 28:63:			; tmp
+
+[mst28] Masknell (half-boss)
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois mort pour libérer le scroll.
+SeqNo = 16:19:			; N° de séquence.
+Order = 20:23:			; N° d'ordre dans la séquence (pour trouver le leader).
+Type = 24:26: Semi_Boss - L02 - 
+Drop = 27:30: Nothing - S_Shotgun - H_Machinegun - F_Flamethrower - R_Rocket - Gas_Tank - Ammo_Box1
+Prm = 31:31:			; tmp
+
+[mst29] Whale
+Prm = 0:7: 
+
+[mst30] Squid Generator
+Zone W = 0:7:			; Largeur de la zone dans laquelle générer les squids.
+Zone H = 8:15:			; Hauteur de la zone dans laquelle générer les squids.
+Type = 16:17: Squids - Piranhas - Jellyfishes
+prm = 18:23:
+
+[mst31] Squid
+Type = 0:3: Squid - Piranha
+prm = 4:7:			; tmp.
+
+[mst32] L11 Scroll ctrl		; Mst qui stoppe relance le scroll.
+prm = 0:7:			; tmp.
+
+[mst33] L11 Generator
+Type = 0:3: MarsEyeTIE - MarsEye2 - Asteroids - Big_Asteroids - MarsUFO - L02_FlyingTara - L11_EndOfLevel - Weapon Capsule - 
+Drop = 4:7: Nothing - H_Machinegun - Gas_Tank - Ammo_Box1
+Nb(1) = 8:11:
+Offset = 12:15:			; Décalage Y pour ceux qui viennent des côtés.
+Scroll Stop = 16:17: No - While_gen - After_last_disp	; Stoppe le scroll pendant cette séquence ? (Non - Pendant la génération - Jusqu'à disparition du dernier monstre).
+prm0 = 18:19:			; tmp
+Shot Pattern = 20:23: One_By_One - All_Together	; Type de tir : Un par un - Tous ensemble.
+Shot 1st Delay = 24:27:		; Délai avant le premier tir (* 16 frames).
+Shot Delay = 28:31:		; Délai entre les tirs (* 16 frames).
+Shot Nb = 32:35:		; Nb de tirs.
+Scroll type = 36:36: Y - X	; Scroll V ou H.
+prm1 = 37:39:			; tmp
+
+[mst34] (Use mst33) L11 Mars Eye
+Type = 0:3: MarsEyeTIE - MarsEye2 -
+Drop = 4:7: Nothing - H_Machinegun - Gas_Tank - Ammo_Box1
+SeqNo = 8:11:			; No de la séquence.
+Offset = 12:15:			; Offset.
+Order = 16:19:			; N° d'ordre dans la séquence (pour trouver le leader).
+Shot Pattern = 20:23: One_By_One - All_Together	; Type de tir : Un par un - Tous ensemble.
+Shot 1st Delay = 24:27:		; Délai avant le premier tir (* 16 frames).
+Shot Delay = 28:31:		; Délai entre les tirs (* 16 frames).
+Shot Nb = 32:35:		; Nb de tirs.
+Scroll type = 36:36: Y - X	; Scroll V ou H.
+prm = 37:39:			; tmp
+
+[mst35] L11 Space Rocks
+prm = 0:7:			; tmp
+
+[mst36] (Use mst33) L11 Asteroids
+SeqNo = 0:3:			; No de la séquence.
+prm = 4:7:			; tmp
+
+[mst37] (Use mst33) L11 Big Asteroids
+SeqNo = 0:3:		; No de la séquence.
+Order = 4:7:		; N° d'ordre dans la séquence (pour trouver le leader).
+
+[mst38] Big Jellyfish (half-boss)
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois mort pour libérer le scroll.
+
+[mst39] Sensor Mine
+prm = 0:7:			; tmp
+
+[mst40] L11 Space Trash
+Nb = 0:2: 3 - 5 - 7		; Nb de merdes.
+
+[mst41] (Use mst33) L11 Mars UFO
+prm = 0:39:			; Mêmes prm que Mst34.
+
+[mst42] Door to destroy
+Type = 0:3: L3 Door - L14 Door - L6 Door -
+Use itm = 8:15:			; N° item de quête à utiliser pour stocker l'état.
+Give itm = 16:23:		; N° item de quête à donner une fois la porte cassée.
+
+[mst43] Flying Tara
+RESERVED_SEQ = 0:7:		; Bits réservés pour la séquence (Utiliser mst 33).
+Drop = 8:11: Nothing - H_Machinegun - Gas_Tank - Ammo_Box1	; H non utilisé.
+Mode = 12:14: L02_Path - L02_To_Player - Std_Level -
+prm = 15:15:			; tmp
+
+[mst44] Slug Open for transition
+prm = 0:7:			; tmp
+
+[mst45] F-Tara Bomb (DO NOT USE)
+Direction = 0:0: Left - Right
+tmp = 1:7:
+
+[mst46] Hair Buster Ribert (Half-boss)
+prm = 0:7:			; tmp
+
+[mst47] L09 Rocket Top
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois explosé.
+
+[mst48] Jokes
+Type = 0:6: Rebel Sunbath - L11 Mothership - L2 Clouds - L6 Main Door - L6 Computer - L8 Wagon Door - L17 Monoeye - L14 Generator - L8 Biker - L7 Rock Slug Sub - 
+Flip X = 7:7: No - Yes
+prm0 = 8:15:
+prm1 = 16:23:
+
+[mst49] Suspended Submarine
+Wait itm = 0:7:			; N° item de quête attendu pour démarrer.
+Give itm = 8:15:		; N° item de quête à donner une fois explosé.
+
+[mst50] Aikawa Rumi
+Drop = 0:3: S_Shotgun - H_Machinegun - F_Flamethrower - R_Rocket - Gas_Tank - Ammo_Box1
+tmp = 4:7:
+
+[mst51] How To Play
+prm = 0:7:			; tmp
+
+[mst52] Credits
+prm = 0:7:			; tmp
+
+
+

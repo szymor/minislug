@@ -1,0 +1,19 @@
+# Makefile to build the static lib 'libymlib.a'
+
+TARGET = libymlib.a 
+OBJECTS = digidrum.o Ym2149Ex.o YmMusic.o LzhLib.o YmLoad.o YmUserInterface.o
+
+CFLAGS = -c -O3 -Wall -Wno-write-strings -s -L/usr/lib -DNDEBUG 
+CPP = g++
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	ar -r -s -o $@ $^ 
+
+.cpp.o:
+	$(CPP) $(CFLAGS) -o $@ $< 
+
+clean:
+	rm $(OBJECTS)
+

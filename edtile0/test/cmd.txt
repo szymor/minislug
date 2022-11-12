@@ -1,0 +1,69 @@
+
+; Format :
+; Entête : [mst<x>] Nom du monstre (optionnel)
+; Paramètres :
+; - Avec valeurs texte : Nom_du_prm = Bit start : Bit End : Val 0 - Val 1 - ...
+; - Avec des valeurs numériques : Nom_du_prm = Bit start : Bit End :
+; - Avec des valeurs numériques signées : Nom_du_prm = -Bit start : Bit End :
+; Pour mettre une valeur par défaut : Nom_du_prm (valeur par défaut) = ...
+
+[mst0] Level Data
+Bkg = 0:7: bkg 1 - bkg 2 - bkg 3
+Time = 8:15:
+
+[mst1] End of level
+prm = 0:7:			; tmp
+
+[mst2] Springboard
+prm = 0:7:			; tmp
+
+[mst3] Cracker (auto)
+prm = 0:7:			; tmp
+
+[mst4] Pitfall (auto)
+prm = 0:7:			; tmp
+
+[mst5] Hurdle
+posx = 0:4:			; pos (de 2 pix en 2 pix)
+prm = 5:7:			; tmp
+
+[mst6] Skateboard
+phase = 0:3: Waiting - Go away
+prm = 4:7:			; tmp
+
+[mst7] Small cans
+posx(8) = 0:4:		; pos (de 2 pix en 2 pix)
+type = 5:6: Blue - Green - 
+prm = 7:7:			; tmp
+
+[mst8] Coke cans
+offset = 0:3:		; en dalles
+bounce = 4:5:		; retour arrière
+prm = 6:7:			; tmp
+
+[mst9] BigTire
+prm = 0:7:			; tmp
+
+[mst10] RedCube
+dist(5) = 0:2:		; Distance
+dir = 3:3: Bas - Haut	; Direction originale
+prm = 4:7:			; tmp
+
+[mst11] TelescopicWall
+prm = 0:7:			; tmp
+
+[mst12] GreenMouse
+prm = 0:7:			; tmp
+
+[mst13] ChessPiece
+type = 0:0: King - Knight
+prm = 1:7:			; tmp
+
+[mst14] Sign
+prm = 0:7:			; tmp
+
+
+
+
+
+
