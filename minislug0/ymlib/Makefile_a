@@ -3,8 +3,8 @@
 TARGET = libymlib.a 
 OBJECTS = digidrum.o Ym2149Ex.o YmMusic.o LzhLib.o YmLoad.o YmUserInterface.o
 
-CFLAGS = -m32 -c -O3 -Wall -Wno-write-strings -s -L/usr/lib -DNDEBUG 
-CPP = g++
+CFLAGS = -c -O3 -Wall -Wno-write-strings -s -DNDEBUG
+CXX ?= g++
 
 all: $(TARGET)
 
@@ -12,7 +12,7 @@ $(TARGET): $(OBJECTS)
 	ar -r -s -o $@ $^ 
 
 .cpp.o:
-	$(CPP) $(CFLAGS) -o $@ $< 
+	$(CXX) $(CFLAGS) -o $@ $<
 
 clean:
 	-rm -f $(OBJECTS) $(TARGET)
