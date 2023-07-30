@@ -78,4 +78,11 @@ It seems the game in the current stage of development will run only on 32 bit pl
 
 In the end I hope to run it on MiyooCFW, RetroFW and other retro handheld systems. I do not promise anything though, I do not plan to spend all my time on gamedev.
 
+# 2023/07/30
+## vamastah aka szymor
+
+It seems I found the reason the game crashed with segfault - audio buffer size was evaluated incorrectly. A simple error, yet such profound implications... My first guess was wrong - the game runs correctly on both 32 bit and 64 bit platforms.
+
+Anyway, expect new ports soon :)
+
 --- EOF

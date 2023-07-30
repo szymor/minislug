@@ -63,19 +63,20 @@ u32 Music_IsOver(void)
 
 
 #define	SFX_SAMPLES_CH	(512)
+#define SFX_CHANNELS	(2)
 
 // Mixer, appelé par SDL.
 void Sfx_MixAudio(void *unused, u8 *stream, int len)
 {
 	// YM replay.
-	static s16	pYmBuffer[SFX_SAMPLES_CH];
+	static s16	pYmBuffer[SFX_SAMPLES_CH * SFX_CHANNELS];
 	if (gSfx.nMusicNo >= 0)
 	{
 		int nbSample = len / sizeof(ymsample);
 		ymMusicCompute((void*)gSfx.ppMusic[gSfx.nMusicNo], (ymsample *)pYmBuffer, nbSample);
 	}
 	else
-		memset(pYmBuffer, 0, SFX_SAMPLES_CH * sizeof(pYmBuffer[0]));
+		memset(pYmBuffer, 0, SFX_SAMPLES_CH * SFX_CHANNELS * sizeof(pYmBuffer[0]));
 
 	// Canaux de Sfx.
 	int	i;
@@ -658,5 +659,3 @@ void PlaySound(char *file)
 }
 
 */
-
-
