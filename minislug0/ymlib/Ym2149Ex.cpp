@@ -234,7 +234,11 @@ ymu32 CYm2149Ex::envStepCompute(ymu8 rHigh,ymu8 rLow)
 
 void	CYm2149Ex::reset(void)
 {
+	// initialize registers to avoid using uninitialized values
+	for (int i=0;i<14;i++)
+		registers[i] = 0;
 
+	// proper register write
 	for (int i=0;i<14;i++)
 		writeRegister(i,0);
 
@@ -568,4 +572,3 @@ void	CYm2149Ex::syncBuzzerStop(void)
 		syncBuzzerPhase = 0;
 		syncBuzzerStep = 0;
 }
-
