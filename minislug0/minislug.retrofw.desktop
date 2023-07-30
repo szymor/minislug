@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=minislug
+Comment=Metal Slug clone
+Exec=minislug
+Terminal=false
+Type=Game
+StartupNotify=true
+Icon=icon
+Categories=games;
+Version=20230730
+X-OD-Manual=_README_final.txt
