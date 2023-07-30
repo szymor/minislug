@@ -1,12 +1,12 @@
-// Gestion des sprites.
+// Sprite management.
 // Code: 17o2!! (Clément CORDE)
 
 #include "includes.h"
 #include "sprites_inc.h"
 
-#define	SPRGRAB_DISPLAY_INFO	0		// Mettre à 0 pour ne pas afficher les infos de capture / 1 pour affichage.
-#define	SPRPAL_SUB_ON	1				// Mettre à 1 pour sauver des palettes par x couleurs au lieu de 256.
-//#define	DEBUG_INFO	1	// Commenter pour supprimer.
+#define	SPRGRAB_DISPLAY_INFO	0		// Set to 0 not to display capture info / 1 to display.
+#define	SPRPAL_SUB_ON	1				// Set to 1 to save palettes with x colors instead of 256.
+//#define	DEBUG_INFO	1	// Comment for deletion.
 
 #if	SPRPAL_SUB_ON == 1
 #define	SPR_PAL_SZ	1	//8	//16
@@ -16,7 +16,7 @@
 
 //#ifdef __LINUX__
 #if defined (__LINUX__) || defined (__APPLE__)
-// stricmp n'existe pas en Linux : C'est strcasecmp à la place, dans strings.h.
+// stricmp doesn't exist in Linux: strcasecmp is used instead, in strings.h.
 int stricmp(char *pStr1, char *pStr2)
 {
 	return (strcasecmp(pStr1, pStr2));
@@ -24,27 +24,27 @@ int stricmp(char *pStr1, char *pStr2)
 #endif
 
 
-// Pour capture des sprites.
+// To capture sprites.
 #define	SPRDEF_ALLOC_UNIT	256
-struct SSprite	*gpSprDef;	// Définitions des sprites.
-u32	gnSprNbSprDefMax;	// Nb de sprites max capturables jusqu'au prochain realloc.
-u32	gnSprNbSprites;		// Nb de sprites capturés.
+struct SSprite	*gpSprDef;	// Sprite definitions.
+u32	gnSprNbSprDefMax;	// Maximum number of sprites that can be captured until the next realloc.
+u32	gnSprNbSprites;		// Number of sprites captured.
 
 #define	SPRBUF_ALLOC_UNIT	(1024 * 1024)
-u8	*gpSprBuf;		// Datas des sprites.
-u32	gnSprBufSz;		// Taille du buffer de data.
-u32	gnSprBufAllocSz;	// Taille du buffer de data allouée pour ne pas faire de réallocs sans arrêt.
+u8	*gpSprBuf;		// Sprite data.
+u32	gnSprBufSz;		// Data buffer size.
+u32	gnSprBufAllocSz;	// Allocated data buffer size to avoid non-stop reallocations.
 
-u16	*gpSprRemapPalettes;	// Palettes de remappage des sprites bout à bout. 1 u16 par couleur au format écran (càd pas RGB), x u16 par pal (voir SPRPAL_SUB_ON et SPR_PAL_SZ).
-u32	gnSprRemapPalettesNb;	// Nb de palettes.
-u8	*gpSprPal3Bytes;		// Les couleurs sur 3 bytes.
+u16	*gpSprRemapPalettes;	// End-to-end sprite remapping palettes. 1 u16 per color in screen format (i.e. not RGB), x u16 per pal (see SPRPAL_SUB_ON and SPR_PAL_SZ).
+u32	gnSprRemapPalettesNb;	// Number of pallets.
+u8	*gpSprPal3Bytes;		// Colors on 3 bytes.
 
-u16	*gpSprFlipBuf;		// Buffer pour créer les images flippées.
+u16	*gpSprFlipBuf;		// Buffer to create flipped images.
 
-extern u8	*gpRotBuf;	// Buffer pour rendu de la rotation. Sz = ROT2D_BUF_Width * ROT2D_BUF_Height. Pas dans le .H car n'a pas a être connu d'autre chose que le moteur de sprites.
+extern u8	*gpRotBuf;	// Buffer for rotation rendering. Sz = ROT2D_BUF_Width * ROT2D_BUF_Height. Not in .H because it doesn't need to be known by anything other than the sprite engine.
 
 
-// Pour tri des sprites à chaque frame.
+// For sorting sprites at each frame.
 struct SSprStockage
 {
 	u32 nSprNo;
@@ -61,8 +61,8 @@ struct SSprStockage
 };
 #define	SPR_STO_MAX	512
 struct SSprStockage	gpSprSto[SPR_STO_MAX];
-struct SSprStockage	*gpSprSort[SPR_STO_MAX];	// Pour tri.
-u32	gnSprSto;			// Nb de sprites stockés pour affichage.
+struct SSprStockage	*gpSprSort[SPR_STO_MAX];	// For sorting.
+u32	gnSprSto;			// Number of sprites stored for display.
 
 
 // Initialisation du moteur (1 fois !).
@@ -941,7 +941,7 @@ void SprLoadGfx(char *pFilename)//, SDL_Color *pSprPal, u32 nPalIdx)
 }
 #endif
 
-// Renvoie un ptr sur un descripteur de sprite.
+// Returns a ptr for a sprite descriptor.
 struct SSprite *SprGetDesc(u32 nSprNo)
 {
 	return (&gpSprDef[nSprNo & ~(SPR_Flip_X | SPR_Flip_Y | SPR_Flag_HitPal)]);
@@ -1372,30 +1372,30 @@ void SprDisplayAll(void)
 
 u32	gnSprPass2Idx, gnSprPass2Last;
 
-// Idem SprDisplayAll, mais séparé en 2 appels pour le plan de masquage.
-// Première passe.
+// Same as SprDisplayAll, but split into 2 calls for the masking plan.
+// First pass.
 void SprDisplayAll_Pass1(void)
 {
 	u32	i;
 
-//	if (gnSprSto == 0)	// Rien à faire ?
-	if (gnSprSto == 0 || gnFrameMissed)	// Rien à faire ?
+	// if (gnSprSto == 0) // Do nothing?
+	if (gnSprSto == 0 || gnFrameMissed)	// Nothing to do?
 	{
-		gnSprSto = 0;			// RAZ pour le prochain tour (frame miss).
-		gnSprPass2Last = 0;		// Pour Pass2.
+		gnSprSto = 0;			// reset for next round (frame miss).
+		gnSprPass2Last = 0;		// For Pass2.
 		return;
 	}
 
-	// Tri sur la priorité.
+	// Sort by priority.
 	qsort(gpSprSort, gnSprSto, sizeof(struct SSprStockage *), qscmp);
 
-	// Affichage.
+	// Display.
 	SDL_LockSurface(gVar.pScreen);
 	for (i = 0; i < gnSprSto && gpSprSort[i]->nPrio < 0x100; i++)
 		SprDisplayLock(gpSprSort[i]);
 	SDL_UnlockSurface(gVar.pScreen);
 
-	// Il en reste ? => Prio > 0x100. On note les valeurs en cours.
+	// Any left? => Prio > 0x100. The current values are noted.
 	if (i < gnSprSto)
 	{
 		gnSprPass2Idx = i;
@@ -1404,21 +1404,21 @@ void SprDisplayAll_Pass1(void)
 	else
 		gnSprPass2Last = 0;
 
-	// RAZ pour le prochain tour.
+	// reset for next round.
 	gnSprSto = 0;
 
 }
 
-// Deuxième passe pour les sprites affichés au dessus du plan de masquage.
-// A appeler une fois par frame, APRES SprDisplayAll_Pass1 !
+// Second pass for sprites displayed above the masking plane.
+// To be called once per frame, AFTER SprDisplayAll_Pass1 !
 void SprDisplayAll_Pass2(void)
 {
 	u32	i;
 
 	if (gnFrameMissed == 0)
-	if (gnSprPass2Last)		// Quelque chose à faire ?
+	if (gnSprPass2Last)		// Anything to do?
 	{
-		// Affichage.
+		// Display.
 		SDL_LockSurface(gVar.pScreen);
 		for (i = gnSprPass2Idx; i < gnSprPass2Last; i++)
 			SprDisplayLock(gpSprSort[i]);
@@ -1426,7 +1426,7 @@ void SprDisplayAll_Pass2(void)
 	}
 
 	#if CACHE_ON == 1
-	CacheClearOldSpr();		// Nettoyage des sprites trop vieux du cache.
+	CacheClearOldSpr();		// Clean up old sprites from the cache.
 	#endif
 
 }
@@ -1435,8 +1435,8 @@ void SprDisplayAll_Pass2(void)
 
 
 
-// Teste une collision entre 2 sprites.
-// Out: 1 col, 0 pas col.
+// Tests a collision between 2 sprites.
+// Out: 1 col, 0 no col.
 u32 SprCheckColBox(u32 nSpr1, s32 nPosX1, s32 nPosY1, u32 nSpr2, s32 nPosX2, s32 nPosY2)
 {
 	s32	nXMin1, nXMax1, nYMin1, nYMax1;
@@ -1456,7 +1456,7 @@ u32 SprCheckColBox(u32 nSpr1, s32 nPosX1, s32 nPosY1, u32 nSpr2, s32 nPosX2, s32
 	nYMin2 = nPosY2 + sRect2.nY1;
 	nYMax2 = nPosY2 + sRect2.nY2;
 
-	// Collisions entre les rectangles ?
+	// Collisions between rectangles?
 	if (nXMax1 >= nXMin2 && nXMin1 <= nXMax2 && nYMax1 >= nYMin2 && nYMin1 <= nYMax2)
 	{
 		return (1);
@@ -1466,15 +1466,15 @@ u32 SprCheckColBox(u32 nSpr1, s32 nPosX1, s32 nPosY1, u32 nSpr2, s32 nPosX2, s32
 }
 
 
-// Récupère un rectangle (ou point) pour un sprite. Prise en compte des bits de flip.
-// Out : 0 = Pas bon. 1 = Ok, et rectangle copié dans pRectDst.
+// Retrieves a rectangle (or point) for a sprite. Flip bits taken into account.
+// Out: 0 = No good. 1 = Ok, and rectangle copied to pRectDst.
 u32 SprGetRect(u32 nSprNo, u32 nZone, struct SSprRect *pRectDst)
 {
 	struct SSprite *pSprDesc;
 	s32	nTmp;
 
 	if ((nSprNo & ~(SPR_Flip_X | SPR_Flip_Y)) == SPR_NoSprite) return (0);
-	pSprDesc = SprGetDesc(nSprNo);			// < GetDesc fera les masques.
+	pSprDesc = SprGetDesc(nSprNo);			// < GetDesc will make the masks.
 	if (pSprDesc->pRect[nZone].nType == e_SprRect_NDef) return (0);
 
 	memcpy(pRectDst, &pSprDesc->pRect[nZone], sizeof(struct SSprRect));
@@ -1493,5 +1493,3 @@ u32 SprGetRect(u32 nSprNo, u32 nZone, struct SSprRect *pRectDst)
 
 	return (1);
 }
-
-
