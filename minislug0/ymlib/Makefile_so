@@ -8,6 +8,7 @@ LNKFLAGS = -shared
 CPP = g++
 
 all: $(TARGET)
+.PHONY: all
 
 $(TARGET): $(OBJECTS)
 	$(CPP) $(LNKFLAGS) -o $@ $^ 
@@ -17,4 +18,4 @@ $(TARGET): $(OBJECTS)
 
 clean:
 	-rm -f $(OBJECTS) $(TARGET)
-
+.PHONY: clean

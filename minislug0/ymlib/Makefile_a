@@ -7,6 +7,7 @@ CFLAGS = -c -O3 -Wall -Wno-write-strings -s -DNDEBUG
 CXX ?= g++
 
 all: $(TARGET)
+.PHONY: all
 
 $(TARGET): $(OBJECTS)
 	ar -r -s -o $@ $^ 
@@ -16,4 +17,4 @@ $(TARGET): $(OBJECTS)
 
 clean:
 	-rm -f $(OBJECTS) $(TARGET)
-
+.PHONY: clean
