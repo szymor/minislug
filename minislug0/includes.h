@@ -120,5 +120,3 @@ enum
 // Variables générales.
 extern struct SGene gVar;
 extern struct SCheatCodes	gCCodes;
-
-

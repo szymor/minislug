@@ -22,7 +22,7 @@ $(TARGET): $(OBJECTS) ymlib/libymlib.a
 	$(CC) $(CFLAGS) -o $<
 
 clean:
-	-rm -f $(TARGET) $(OBJECTS) minislug.opk
+	-rm -f $(TARGET) $(OBJECTS) minislug.opk minislug.zip
 	-make -C ymlib -f Makefile_a clean
 .PHONY: clean
 
