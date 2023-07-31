@@ -63,6 +63,10 @@ struct SMenuGen
 	u8	nMain_SinIdx;		// Pour bouffonerie sur le main.
 
 	s8	nAnm0;	// Anim Marco Win pour hiscore get name.
+#ifdef HIGH_NoKeyboard
+	u8	nHiCursPos;			// Position du viseur (hi score sans clavier).
+	u8	nHiAltLtr;			// Alternate letters.
+#endif
 
 };
 struct SMenuGen	gMenu;
@@ -948,6 +952,266 @@ u32 MenuHighScores_Main(void)
 }
 
 //=============================================================================
+#ifdef HIGH_NoKeyboard
+
+#define	KEY_ALT_LETTERS	(SDLK_LSHIFT)
+#define	KEY_ENTER	(SDLK_RETURN)
+#define	KEY_ALT_MODE	(0)			// 0 or 1.
+
+#define	HIGN_OFFS1STLN	(32+4)		// Décalage de la première ligne affichée.
+
+#define	HIGN_RANK_LN	(1)
+struct SMenuItm gpMenuItems_GetName[] =
+{
+	{ 0, 0, "Congratulations!" },
+	{ 0, 0, "You ranked #0@" },
+	{ 0, 0, "Enter your name:" },
+};
+
+// Init.
+void MenuGetName_Init(void)
+{
+	u32	i;
+
+	MenuInitFade();
+	AnmInitEngine();	// Pour anim spr.
+
+	gMenu.nAnm0 = AnmSet(gAnm_Hero_Victory, -1);	// Anim Marco Win.
+	gMenu.nHiCursPos = 0;			// Position du viseur (hi score sans clavier).
+	gMenu.nHiAltLtr = 0;			// Alternate letters.
+
+	// Rank atteint.
+//s	gMenu.nRank = Scr_CheckHighSc(gShoot.nPlayerScore);
+	gMenu.nRank = Scr_CheckHighSc(gGameVar.nBestScore);
+	// Calcul de la longueur des chaînes.
+	for (i = 0; i < NBELEM(gpMenuItems_GetName); i++)
+	{
+		gpMenuItems_GetName[i].nLg = Font_Print(0, 8, gpMenuItems_GetName[i].pTxt, FONT_NoDisp);
+	}
+	//
+	gMenu.nKeyDown = 0;
+
+	Transit2D_InitOpening(e_Transit_Menu);
+
+}
+
+// Saisie du nom quand high-score.
+u32 MenuGetName_Main(void)
+{
+	u32	nRet = MENU_Null;
+	u32	i, j;
+
+	#define	HI_LTR_LG	(10)
+	#define	HI_LTR_HT	(5)
+	static	u8 pLettersUC[HI_LTR_LG * HI_LTR_HT] =
+	{
+		'0','1','2','3','4','5','6','7','8','9',
+		'A','B','C','D','E','F','G','H','I','J',
+		'K','L','M','N','O','P','Q','R','S','T',
+		'U','V','W','X','Y','Z',' ','.',':','!',
+		'-','+','*','/','[',']','<','>',' ',' '
+	};
+	static	u8 pLettersLC[HI_LTR_LG * HI_LTR_HT] =
+	{
+		'!','@','#','$','%','^','&','*','(',')',
+		'a','b','c','d','e','f','g','h','i','j',
+		'k','l','m','n','o','p','q','r','s','t',
+		'u','v','w','x','y','z',' ',',',';','?',
+		'_','=','*','/','{','}','<','>',' ',' '
+	};
+#if KEY_ALT_MODE == 0
+	u8	*pLetters = pLettersUC;
+#else
+	u8	*pLetters = (gMenu.nHiAltLtr ? pLettersLC : pLettersUC);
+#endif
+
+	// Selon l'état.
+	switch (gMenu.nState)
+	{
+	case MENU_State_FadeIn:
+		if (Transit2D_CheckEnd()) gMenu.nState = MENU_State_Input;
+		break;
+
+	case MENU_State_FadeOut:
+		if (Transit2D_CheckEnd())	// Sortie.
+		{
+			char	*pCurStr = gMenu.pScName;
+
+			// Si pas de nom, mettre John Doe.
+			static char	pDefName[HISC_NameLg] = "John DOE";
+//			if (gMenu.nScIdx == 0 || MenuTimer_Cnt(MENU_TIMER_GEN)) pCurStr = pDefName;		// Fonctionne, mais bof. // Note on se fiche de l'incrémentation du timer à ce niveau. Soit on est passé avec return et ça passe de 0 à 1, soit on est au delà de la limite et c'est ce qu'on veut tester.
+			if (gMenu.nScIdx == 0) pCurStr = pDefName;
+			// Rajoute le nom dans les High-scores + note la ligne à faire clignoter pour l'affichage des high-scores qui va suivre.
+//s			gMenu.nHighScoreBlinkIdx = Scr_PutNameInTable(pCurStr, gGameVar.nMissionNo, gGameVar.nContinueUsed + 1, gShoot.nPlayerScore);
+			gMenu.nHighScoreBlinkIdx = Scr_PutNameInTable(pCurStr, gGameVar.nBestScore);
+			Scr_Save();				// Sauvegarde du fichier des scores.
+
+			nRet = MENU_Main;		// Sortie.
+		}
+		break;
+
+	case MENU_State_Input:
+		// Gestion du clavier.
+		{
+			// On termine la saisie ?
+			if (gVar.pKeys[KEY_ENTER] || MenuTimer_Cnt(MENU_TIMER_GEN))
+			{
+				gVar.pKeys[KEY_ENTER] = 0;
+				gMenu.nState = MENU_State_FadeOut;
+				Transit2D_InitClosing(e_Transit_Menu);
+				// Sfx.
+				Sfx_PlaySfx(FX_Menu_Clic, e_SfxPrio_10);
+				break;
+			}
+
+			// Alternate keys ?
+#if KEY_ALT_MODE == 0
+			if (gVar.pKeys[KEY_ALT_LETTERS])
+				pLetters = pLettersLC;
+#else
+			if (gVar.pKeys[KEY_ALT_LETTERS])
+			{
+				gMenu.nHiAltLtr ^= 1;			// Alternate letters.
+				pLetters = (gMenu.nHiAltLtr ? pLettersLC : pLettersUC);
+				gVar.pKeys[KEY_ALT_LETTERS] = 0;
+			}
+#endif
+
+			// Position du viseur.
+			j = gMenu.nHiCursPos / HI_LTR_LG;
+			i = gMenu.nHiCursPos % HI_LTR_LG;
+
+			if (gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Right]])
+			{
+				if (++i >= HI_LTR_LG) i = 0;
+				gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Right]] = 0;
+			}
+			if (gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Left]])
+			{
+				if (--i >= HI_LTR_LG) i = HI_LTR_LG - 1;
+				gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Left]] = 0;
+			}
+			if (gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Down]])
+			{
+				if (++j >= HI_LTR_HT) j = 0;
+				gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Down]] = 0;
+			}
+			if (gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Up]])
+			{
+				if (--j >= HI_LTR_HT) j = HI_LTR_HT - 1;
+				gVar.pKeys[gMSCfg.pKeys[e_CfgKey_Up]] = 0;
+			}
+
+			gMenu.nHiCursPos = (j * HI_LTR_LG) + i;
+
+			u32	nChr = 0;
+
+			// Backspace.
+			if (gVar.pKeys[gMSCfg.pKeys[e_CfgKey_ButtonB]])
+			{
+				nChr = 0xFF;
+			}
+			// Lettre.
+			if (gVar.pKeys[gMSCfg.pKeys[e_CfgKey_ButtonA]])
+			{
+				nChr = pLetters[gMenu.nHiCursPos];
+			}
+	
+			// Pseudo trigger.
+			if (gMenu.nKeyDown != nChr && nChr)
+			{
+				if (nChr == 0xFF)	// BACKSPACE
+				{
+					if (gMenu.nScIdx) gMenu.pScName[--gMenu.nScIdx] = 0;
+				}
+				else if (gMenu.nScIdx < HISC_NameLg - 1)
+				{
+					gMenu.pScName[gMenu.nScIdx++] = nChr;
+					gMenu.pScName[gMenu.nScIdx] = 0;
+				}
+				gMenu.nKeyDown = nChr;
+				Sfx_PlaySfx(FX_Menu_Move, e_SfxPrio_10);	// Sfx.
+			}
+			else if (nChr == 0)
+			{
+				gMenu.nKeyDown = 0;		// Release.
+			}
+
+		}
+		break;
+	}
+
+	// Affichage.
+
+	// Bkg qui scrolle, image 128 x 128.
+	Bkg1Scroll(-gnFrame >> 1, -gnFrame >> 1);
+
+	// On rajoute le rank dans sa ligne.
+	char pRank[30];
+	strcpy(pRank, gpMenuItems_GetName[HIGN_RANK_LN].pTxt);
+	char *pPtr = strchr(pRank, '@');
+	if (pPtr != NULL)
+	{
+		MyItoA(gMenu.nRank + 1, pPtr-1);
+	}
+
+	// Lignes.
+	for (i = 0; i < NBELEM(gpMenuItems_GetName)-1; i++)
+	{
+//		Font_Print((SCR_Width - gpMenuItems_GetName[i].nLg) / 2, 80 + (i*32), (i == HIGN_RANK_LN ? pRank : gpMenuItems_GetName[i].pTxt), 0);
+		Font_Print((SCR_Width - gpMenuItems_GetName[i].nLg) / 2, HIGN_OFFS1STLN + (i*16), (i == HIGN_RANK_LN ? pRank : gpMenuItems_GetName[i].pTxt), 0);
+	}
+	Font_Print((SCR_Width - gpMenuItems_GetName[i].nLg) / 2, HIGN_OFFS1STLN +48, gpMenuItems_GetName[i].pTxt, 0);
+	// Nom en cours.
+	i = Font_Print(0, 0, gMenu.pScName, FONT_NoDisp);
+//	Font_Print((SCR_Width - i) / 2, 80+64+16, gMenu.pScName, 0);
+	Font_Print((SCR_Width - i) / 2, HIGN_OFFS1STLN +48+16, gMenu.pScName, 0);
+	// Curseur au bout du nom.
+	if (gnFrame & 8)
+	{
+//		Font_Print(((SCR_Width - i) / 2) + i, 80+64+16, "_", 0);
+		Font_Print(((SCR_Width - i) / 2) + i, HIGN_OFFS1STLN +48+16, "_", 0);
+	}
+
+	// Affichage du tableau de lettres.
+	#define	HI_LTR_Isp	(16)
+	#define	HI_LTR_OrgX	((SCR_Width / 2) - (((10 * HI_LTR_Isp) - 8) / 2))
+	#define	HI_LTR_OrgY	(HIGN_OFFS1STLN +48+16+32)
+	u32	c;
+	for (j = 0; j < HI_LTR_HT; j++)
+	for (i = 0; i < HI_LTR_LG; i++)
+	{
+		c = pLetters[(j * HI_LTR_LG) + i];
+		if (c != ' ')
+			SprDisplayAbsolute(e_Spr_FontSmall + c - ' ' - 1, HI_LTR_OrgX + (i * HI_LTR_Isp), HI_LTR_OrgY + (j * HI_LTR_Isp), e_Prio_HUD);
+	}
+
+	// Affichage du viseur.
+	j = gMenu.nHiCursPos / HI_LTR_LG;
+	i = gMenu.nHiCursPos % HI_LTR_LG;
+
+	s32	nOffs = (gMenu.nKeyDown != 0 && gMenu.nKeyDown != 0xFF ? 1 : 0);
+
+	SprDisplayAbsolute(e_Spr_Tstrct_CornerUL, HI_LTR_OrgX + (i * HI_LTR_Isp) -3 +nOffs, HI_LTR_OrgY + (j * HI_LTR_Isp) -10 +nOffs, e_Prio_HUD + 1);
+	SprDisplayAbsolute(e_Spr_Tstrct_CornerUR, HI_LTR_OrgX + (i * HI_LTR_Isp) +9 -nOffs, HI_LTR_OrgY + (j * HI_LTR_Isp) -10 +nOffs, e_Prio_HUD + 1);
+	SprDisplayAbsolute(e_Spr_Tstrct_CornerDL, HI_LTR_OrgX + (i * HI_LTR_Isp) -3 +nOffs, HI_LTR_OrgY + (j * HI_LTR_Isp) +2 -nOffs, e_Prio_HUD + 1);
+	SprDisplayAbsolute(e_Spr_Tstrct_CornerDR, HI_LTR_OrgX + (i * HI_LTR_Isp) +9 -nOffs, HI_LTR_OrgY + (j * HI_LTR_Isp) +2 -nOffs, e_Prio_HUD + 1);
+
+	// Sprite de Marco Win.
+	i = 0;
+	if (gMenu.nAnm0 != -1) i += AnmGetImage(gMenu.nAnm0);
+	i += e_Spr_Hero_Victory_Machinegun;
+	SprDisplayAbsolute(i, 30, (SCR_Height/2) + 80-8-4, e_Prio_Joueur);
+	SprDisplayAbsolute(i ^ SPR_Flip_X, SCR_Width - 30, (SCR_Height/2) + 80-8-4, e_Prio_Joueur);
+
+
+	gVar.nFadeVal = gMenu.nFadeVal;
+	return (nRet);
+
+}
+
+//=============================================================================
+#else
 
 #define	HIGN_OFFS1STLN	58		// Décalage de la première ligne affichée.
 
@@ -1144,6 +1408,7 @@ u32 MenuGetName_Main(void)
 
 }
 
+#endif
 //=============================================================================
 
 #define	CFG_FILENAME	"mslug.cfg"
