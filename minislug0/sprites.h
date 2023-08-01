@@ -4,22 +4,22 @@
 #define	SPR_Flip_Y		(1 << 30)
 #define	SPR_Flag_HitPal		(1 << 29)
 
-#define	SPR_NoSprite	((u32)-2 & ~(SPR_Flip_X | SPR_Flip_Y))		// Sprite qui n'affiche rien.
+#define	SPR_NoSprite	((u32)-2 & ~(SPR_Flip_X | SPR_Flip_Y))		// Sprite that displays nothing.
 
 // Structures.
 
-#define	SPRRECT_MAX_ZONES	3	// Nb de zones max à relire.
+#define	SPRRECT_MAX_ZONES	3	// Max number of zones to reread.
 enum
 {
-	e_SprRect_NDef = 0,		// Zone non définie.
-	e_SprRect_Point,		// C'est un point : (x1, y1).
-	e_SprRect_Rect,			// C'est un rectangle.
+	e_SprRect_NDef = 0,		// Area not defined.
+	e_SprRect_Point,		// A point: (x1, y1).
+	e_SprRect_Rect,			// A rectangle.
 };
 enum
 {
-	e_SprRectZone_PtRef = 0,	// Alpha 1 = Point de ref.
-	e_SprRectZone_RectCol,		// Alpha 2 = Zone de collision.
-	e_SprRectZone_ShotOrg,		// Alpha 3 = Origine des tirs.
+	e_SprRectZone_PtRef = 0,	// Alpha 1 = Ref point
+	e_SprRectZone_RectCol,		// Alpha 2 = Collision zone.
+	e_SprRectZone_ShotOrg,		// Alpha 3 = Origin of shots.
 };
 
 #pragma pack(1)
@@ -33,17 +33,17 @@ struct SSprRect
 
 struct SSprite
 {
-//	s32	nPtRefX, nPtRefY;	// Points de ref.
-//	u32	nLg, nHt;			// Largeur et hauteur du sprite.
-	s16	nPtRefX, nPtRefY;	// Points de ref.
-	u16	nLg, nHt;			// Largeur et hauteur du sprite.
+//	s32	nPtRefX, nPtRefY;	// Ref points
+//	u32	nLg, nHt;			// Sprite width and height.
+	s16	nPtRefX, nPtRefY;	// Ref points
+	u16	nLg, nHt;			// Sprite width and height.
 	union
 	{
 		u8	*pGfx8;
-		u32	nGfx8Offset;	// Pour stockage temporaire de l'offset pendant la lecture des planches.
+		u32	nGfx8Offset;	// For temporary offset storage while plates are being read.
 	};
-//	u32	nRemapPalNo;		// N° de la palette de remappage.
-	u16	nRemapPalNo;		// N° de la palette de remappage.
+//	u32	nRemapPalNo;		// Remapping palette number.
+	u16	nRemapPalNo;		// Remapping palette number.
 
 	struct SSprRect	pRect[SPRRECT_MAX_ZONES];	// Rectangles, points...
 
