@@ -722,13 +722,41 @@ u32 Scr_CalcChecksum(void)
 	return (nChk);
 }
 
+const char *Scr_GetHiscoreDir(void)
+{
+	static char hiscdir[4096] = "";
+	if (hiscdir[0] == '\0')
+	{
+		const char *homedir = getenv("HOME");
+		if (homedir)
+		{
+			sprintf(hiscdir, "%s/%s", homedir, ".minislug");
+		}
+	}
+	return hiscdir;
+}
+
+const char *Scr_GetHiscorePath(void)
+{
+	static char hiscpath[4096] = "";
+	if (hiscpath[0] == '\0')
+	{
+		sprintf(hiscpath, "%s/%s", Scr_GetHiscoreDir(), HISC_Filename);
+	}
+	return hiscpath;
+}
+
 // Lecture du fichier des high scores.
 void Scr_Load(void)
 {
 	FILE	*pFile;
 	u32	nChk;
 
+#ifdef USE_HOMEDIR
+	if ((pFile = fopen(Scr_GetHiscorePath(), "rb")) != NULL)
+#else
 	if ((pFile = fopen(HISC_Filename, "rb")) != NULL)
+#endif
 	{
 		// Le fichier existe, lecture.
 		fread(gpHighScores, sizeof(struct SScore), HISC_Nb, pFile);
@@ -756,7 +784,12 @@ void Scr_Save(void)
 	FILE	*pFile;
 	u32	nChk;
 
+#ifdef USE_HOMEDIR
+	mkdir(Scr_GetHiscoreDir(), 0755);
+	if ((pFile = fopen(Scr_GetHiscorePath(), "wb")) == NULL)
+#else
 	if ((pFile = fopen(HISC_Filename, "wb")) == NULL)
+#endif
 	{
 		fprintf(stderr, "Scr_Save(): Unable to save highscores table.\n");
 		return;
@@ -1485,5 +1518,3 @@ _CfgLoad_def:
 	memcpy(&gMSCfg, &sCfgDefault, sizeof(struct SMSCfg));
 	return (1);
 }
-
-

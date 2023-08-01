@@ -688,8 +688,13 @@ if (gVar.pKeys[SDLK_y]) { FrameWait(); FrameWait(); FrameWait(); FrameWait(); Fr
 
 #if defined (PAUSE_MENU)
 
-#define	PAUSE_TXT_NB	(3)
+#ifndef HIGH_NoKeyboard
 #define	PAUSE_KEY	(SDLK_F12)
+#else
+#define	PAUSE_KEY	(SDLK_RETURN)
+#endif
+
+#define	PAUSE_TXT_NB	(3)
 #define	PAUSE_TXT_LNHT	(12)
 #define	PAUSE_TXT_LNPOSY(nLn)	( (SCR_Height / 2) - (((PAUSE_TXT_NB + 1) * PAUSE_TXT_LNHT) / 2) + 10 + ((nLn) * PAUSE_TXT_LNHT) )
 #define	PAUSE_CLOSEFX_LG	(8)		// !!! Divisible par 4 !!!
@@ -819,7 +824,11 @@ u32 Pause(void)
 		}
 
 		// Button A.
-		if (gVar.pKeys[SDLK_RETURN] || gVar.pKeys[SDLK_SPACE] || gVar.pKeys[gMSCfg.pKeys[e_CfgKey_ButtonA]])
+		u8 button_a_check = gVar.pKeys[gMSCfg.pKeys[e_CfgKey_ButtonA]];
+#ifndef HIGH_NoKeyboard
+		button_a_check = button_a_check || gVar.pKeys[SDLK_RETURN] || gVar.pKeys[SDLK_SPACE];
+#endif
+		if (button_a_check)
 		{
 //			Sfx_PlaySfx(FX_Menu_Clic, e_SfxPrio_10);    // Sfx.
 			gVar.pKeys[gMSCfg.pKeys[e_CfgKey_ButtonA]] = 0;

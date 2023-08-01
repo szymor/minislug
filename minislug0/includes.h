@@ -6,6 +6,7 @@
 #include <math.h>
 #include <time.h>
 #include <assert.h>
+#include <sys/stat.h>
 
 #include "ctypes.h"
 
