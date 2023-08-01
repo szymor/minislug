@@ -7,5 +7,5 @@ Type=Game
 StartupNotify=true
 Icon=icon
 Categories=games;
-Version=20230730
+Version=20230802
 X-OD-Manual=_README_final.txt
