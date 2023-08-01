@@ -302,7 +302,7 @@ void RenderFlip(u32 nSync)
 	static pRenderFct	pFctTb[e_RenderMode_MAX] = { NULL, Render_Scale2x, Render_TV2x };
 #endif
 
-	// Frames loupées ? => Pas de Rendu/Flip.
+	// Missed frames? => No Render/Flip.
 	if (nSync && gnFrameMissed)
 	{
 		FrameWait();

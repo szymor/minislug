@@ -3,7 +3,7 @@
 
 #define FPS_Default (1000 / 70)
 u32 gnTimer1;
-u32 gnFrame;	// Compteur général.
+u32 gnFrame;	// General counter.
 #define	FPS_MissMax	(2)
 u8	gnFrameMissed;
 
@@ -14,20 +14,20 @@ void FrameInit(void)
 	gnFrameMissed = 0;
 }
 
-// Attente de la frame.
+// Waiting for the frame.
 void FrameWait(void)
 {
 	u32	nTimer2;
 
 /*
 */
-	// On a loupé des frames ?
+	// Have we missed any frames?
+#ifndef NO_FRAME_SKIPPING
 	if (gnFrameMissed == 0)
 	{
 		nTimer2 = SDL_GetTicks() - gnTimer1;
 		if (nTimer2 >= FPS_Default) gnFrameMissed = nTimer2 / FPS_Default;
-//if (gnFrameMissed) printf("Frames missed: %d / %d\n", gnFrame, gnFrameMissed);
-		if (gnFrameMissed > FPS_MissMax) gnFrameMissed = FPS_MissMax;	// On ne saute pas trop de frames quand même.
+		if (gnFrameMissed > FPS_MissMax) gnFrameMissed = FPS_MissMax;	// Don't skip too many frames, though.
 		if (gnFrameMissed) goto _FrameEnd;
 	}
 	else
@@ -35,21 +35,23 @@ void FrameWait(void)
 		gnFrameMissed--;
 		goto _FrameEnd;
 	}
+#endif
 
 //nTimer2 = SDL_GetTicks() - gnTimer1;
 //if (nTimer2 >= FPS_Default) printf("missed: %d\n", nTimer2 / FPS_Default);
 
-	// On s'assure qu'on ne va pas trop vite...
+	// Making sure we don't go too fast...
+#ifndef FLIP_VSYNC
 	while (1)
 	{
 		nTimer2 = SDL_GetTicks() - gnTimer1;
 		if (nTimer2 >= FPS_Default) break;
 		SDL_Delay(3);
 	}
+#endif
 _FrameEnd:
 	gnTimer1 = SDL_GetTicks();
 
 	gnFrame++;
 
 }
-
